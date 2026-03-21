@@ -1,5 +1,6 @@
 package dev.jcasas.features.budgets
 
+import dev.jcasas.TransactionType
 import dev.jcasas.features.categories.CategoryService
 import dev.jcasas.features.transactions.Transactions
 import kotlinx.coroutines.Dispatchers
@@ -19,23 +20,37 @@ class BudgetService(
         val items = repository.findBudgetItemsByBudgetId(budget.id)
         val spentByItem = getSpentByBudgetItems(items.map { it.id })
 
+        var totalExpenseCents = 0L
+        var totalIncomeCents = 0L
+
         val itemResponses = items.map { item ->
             val category = categoryService.getById(item.categoryId)!!
+            val itemSpentCents = spentByItem[item.id] ?: 0L
+
+            when (category.type) {
+                TransactionType.EXPENSE -> totalExpenseCents += itemSpentCents
+                TransactionType.INCOME -> totalIncomeCents += itemSpentCents
+            }
+
             BudgetItemResponse(
                 id = item.id,
                 categoryId = item.categoryId,
                 categoryName = category.name,
                 categoryType = category.type,
                 allocation = BigDecimal(item.allocationCents).movePointLeft(2).toPlainString(),
-                spent = BigDecimal(spentByItem[item.id] ?: 0L).movePointLeft(2).toPlainString(),
+                spent = BigDecimal(itemSpentCents).movePointLeft(2).toPlainString(),
                 snoozed = item.snoozed,
             )
         }
+
+        val remainingCents = totalExpenseCents - totalIncomeCents
 
         return BudgetResponse(
             id = budget.id,
             year = budget.year,
             month = budget.month,
+            spent = BigDecimal(totalExpenseCents).movePointLeft(2).toPlainString(),
+            remaining = BigDecimal(remainingCents).movePointLeft(2).toPlainString(),
             items = itemResponses,
         )
     }

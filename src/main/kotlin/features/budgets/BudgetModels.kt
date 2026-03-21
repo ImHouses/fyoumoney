@@ -39,6 +39,8 @@ data class BudgetResponse(
     val id: Int,
     val year: Int,
     val month: Int,
+    val spent: String,
+    val remaining: String,
     val items: List<BudgetItemResponse>,
 )
 

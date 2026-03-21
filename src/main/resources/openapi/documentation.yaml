@@ -402,6 +402,12 @@ components:
           type: integer
         month:
           type: integer
+        spent:
+          type: string
+          description: Total expenses as decimal string
+        remaining:
+          type: string
+          description: Total expenses minus total income as decimal string
         items:
           type: array
           items:

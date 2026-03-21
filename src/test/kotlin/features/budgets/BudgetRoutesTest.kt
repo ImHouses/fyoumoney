@@ -60,6 +60,8 @@ class BudgetRoutesTest {
         val body = response.bodyAsText()
         assertContains(body, "Food")
         assertContains(body, "500.00")
+        assertContains(body, "\"spent\"")
+        assertContains(body, "\"remaining\"")
     }
 
     @Test

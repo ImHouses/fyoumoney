@@ -65,5 +65,25 @@ class BudgetSpentTotalsTest {
         val budget = budgetService.getOrCreateBudget(2026, 3)
 
         assertEquals("0.00", budget.items[0].spent)
+        assertEquals("0.00", budget.spent)
+        assertEquals("0.00", budget.remaining)
+    }
+
+    @Test
+    fun `budget spent and remaining summarize expense and income totals`() = runBlocking {
+        val foodId = categoryService.create(NewCategory("Food", TransactionType.EXPENSE, 50000))
+        val salaryId = categoryService.create(NewCategory("Salary", TransactionType.INCOME, 300000))
+
+        transactionService.create(
+            NewTransaction(BigDecimal("100.00"), foodId, "Groceries", LocalDate.of(2026, 3, 20)),
+        )
+        transactionService.create(
+            NewTransaction(BigDecimal("3000.00"), salaryId, "March salary", LocalDate.of(2026, 3, 1)),
+        )
+
+        val budget = budgetService.getOrCreateBudget(2026, 3)
+
+        assertEquals("100.00", budget.spent)
+        assertEquals("-2900.00", budget.remaining)
     }
 }
