@@ -1,5 +1,6 @@
 package dev.jcasas.features.transactions
 
+import dev.jcasas.TransactionType
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.date
 

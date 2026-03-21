@@ -1,5 +1,6 @@
 package dev.jcasas.features.transactions
 
+import dev.jcasas.TransactionType
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils

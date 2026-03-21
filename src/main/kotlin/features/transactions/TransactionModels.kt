@@ -1,10 +1,9 @@
 package dev.jcasas.features.transactions
 
+import dev.jcasas.TransactionType
 import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 import java.time.LocalDate
-
-enum class TransactionType { INCOME, EXPENSE }
 
 data class Transaction(
     val id: Int,
