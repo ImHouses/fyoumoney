@@ -57,7 +57,7 @@ class TransactionRoutesTest {
     private suspend fun ApplicationTestBuilder.createCategory(): String {
         val response = client.post("/categories") {
             contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
         }
         return response.bodyAsText().trim()
     }

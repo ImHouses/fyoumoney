@@ -67,14 +67,14 @@ class BudgetServiceTest {
     fun `getOrCreateBudget copies default allocation from category`() = runBlocking {
         categoryService.create(NewCategory("Food", TransactionType.EXPENSE, 50000))
         val response = budgetService.getOrCreateBudget(2026, 3)
-        assertEquals(50000L, response.items[0].allocationCents)
+        assertEquals("500.00", response.items[0].allocation)
     }
 
     @Test
     fun `getOrCreateBudget returns spent totals as zero when no transactions`() = runBlocking {
         categoryService.create(NewCategory("Food", TransactionType.EXPENSE, 50000))
         val response = budgetService.getOrCreateBudget(2026, 3)
-        assertEquals(0L, response.items[0].spentCents)
+        assertEquals("0.00", response.items[0].spent)
     }
 
     @Test
@@ -84,7 +84,7 @@ class BudgetServiceTest {
         val itemId = budget.items[0].id
         budgetService.updateBudgetItem(itemId, allocationCents = 60000, snoozed = null)
         val updated = budgetService.getOrCreateBudget(2026, 3)
-        assertEquals(60000L, updated.items[0].allocationCents)
+        assertEquals("600.00", updated.items[0].allocation)
     }
 
     @Test

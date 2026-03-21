@@ -46,7 +46,7 @@ class CategoryRoutesTest {
     fun `POST categories creates and returns 201`() = withApp {
         val response = client.post("/categories") {
             contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
         }
         assertEquals(HttpStatusCode.Created, response.status)
     }
@@ -55,7 +55,7 @@ class CategoryRoutesTest {
     fun `GET categories returns all active categories`() = withApp {
         client.post("/categories") {
             contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
         }
         val response = client.get("/categories")
         assertEquals(HttpStatusCode.OK, response.status)
@@ -66,7 +66,7 @@ class CategoryRoutesTest {
     fun `GET categories by id returns the category`() = withApp {
         val created = client.post("/categories") {
             contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
         }
         val id = created.bodyAsText().trim()
         val response = client.get("/categories/$id")
@@ -84,12 +84,12 @@ class CategoryRoutesTest {
     fun `PUT categories updates and returns 200`() = withApp {
         val created = client.post("/categories") {
             contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
         }
         val id = created.bodyAsText().trim()
         val response = client.put("/categories/$id") {
             contentType(ContentType.Application.Json)
-            setBody("""{"name":"Groceries","type":"EXPENSE","defaultAllocationCents":60000}""")
+            setBody("""{"name":"Groceries","type":"EXPENSE","defaultAllocation":"600.00"}""")
         }
         assertEquals(HttpStatusCode.OK, response.status)
     }
@@ -98,7 +98,7 @@ class CategoryRoutesTest {
     fun `DELETE categories soft-deletes and returns 200`() = withApp {
         val created = client.post("/categories") {
             contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
         }
         val id = created.bodyAsText().trim()
         val response = client.delete("/categories/$id")

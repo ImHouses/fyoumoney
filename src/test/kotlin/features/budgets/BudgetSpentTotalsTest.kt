@@ -55,7 +55,7 @@ class BudgetSpentTotalsTest {
         val budget = budgetService.getOrCreateBudget(2026, 3)
         val foodItem = budget.items.first { it.categoryId == categoryId }
 
-        assertEquals(3550L, foodItem.spentCents)
+        assertEquals("35.50", foodItem.spent)
     }
 
     @Test
@@ -64,6 +64,6 @@ class BudgetSpentTotalsTest {
 
         val budget = budgetService.getOrCreateBudget(2026, 3)
 
-        assertEquals(0L, budget.items[0].spentCents)
+        assertEquals("0.00", budget.items[0].spent)
     }
 }

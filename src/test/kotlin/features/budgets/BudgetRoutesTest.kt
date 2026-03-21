@@ -53,13 +53,13 @@ class BudgetRoutesTest {
     fun `GET budgets year month auto-creates and returns budget`() = withApp {
         client.post("/categories") {
             contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
         }
         val response = client.get("/budgets/2026/3")
         assertEquals(HttpStatusCode.OK, response.status)
         val body = response.bodyAsText()
         assertContains(body, "Food")
-        assertContains(body, "50000")
+        assertContains(body, "500.00")
     }
 
     @Test
@@ -72,7 +72,7 @@ class BudgetRoutesTest {
     fun `GET budgets returns list of all budgets`() = withApp {
         client.post("/categories") {
             contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
         }
         client.get("/budgets/2026/1")
         client.get("/budgets/2026/2")
@@ -85,7 +85,7 @@ class BudgetRoutesTest {
     fun `GET budgets filters by year query param`() = withApp {
         client.post("/categories") {
             contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
         }
         client.get("/budgets/2026/1")
         client.get("/budgets/2025/12")
@@ -98,7 +98,7 @@ class BudgetRoutesTest {
     fun `PUT budget item updates allocation`() = withApp {
         client.post("/categories") {
             contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
         }
         val budgetResponse = client.get("/budgets/2026/3")
         val body = budgetResponse.bodyAsText()
@@ -106,7 +106,7 @@ class BudgetRoutesTest {
         val itemId = itemIdMatch.groupValues[1]
         val response = client.put("/budgets/2026/3/items/$itemId") {
             contentType(ContentType.Application.Json)
-            setBody("""{"allocationCents":60000}""")
+            setBody("""{"allocation":"600.00"}""")
         }
         assertEquals(HttpStatusCode.OK, response.status)
     }

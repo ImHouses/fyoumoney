@@ -19,7 +19,7 @@ data class BudgetItem(
 
 @Serializable
 data class BudgetItemUpdateRequest(
-    val allocationCents: Long? = null,
+    val allocation: String? = null,
     val snoozed: Boolean? = null,
 )
 
@@ -29,8 +29,8 @@ data class BudgetItemResponse(
     val categoryId: Int,
     val categoryName: String,
     val categoryType: TransactionType,
-    val allocationCents: Long,
-    val spentCents: Long,
+    val allocation: String,
+    val spent: String,
     val snoozed: Boolean,
 )
 

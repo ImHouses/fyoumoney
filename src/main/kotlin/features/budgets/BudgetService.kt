@@ -5,6 +5,7 @@ import dev.jcasas.features.transactions.Transactions
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.sum
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import java.math.BigDecimal
 
 class BudgetService(
     private val repository: BudgetRepository,
@@ -25,8 +26,8 @@ class BudgetService(
                 categoryId = item.categoryId,
                 categoryName = category.name,
                 categoryType = category.type,
-                allocationCents = item.allocationCents,
-                spentCents = spentByItem[item.id] ?: 0L,
+                allocation = BigDecimal(item.allocationCents).movePointLeft(2).toPlainString(),
+                spent = BigDecimal(spentByItem[item.id] ?: 0L).movePointLeft(2).toPlainString(),
                 snoozed = item.snoozed,
             )
         }

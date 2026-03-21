@@ -2,6 +2,7 @@ package dev.jcasas.features.categories
 
 import dev.jcasas.TransactionType
 import kotlinx.serialization.Serializable
+import java.math.BigDecimal
 
 data class Category(
     val id: Int,
@@ -21,12 +22,12 @@ data class NewCategory(
 data class CategoryRequest(
     val name: String,
     val type: TransactionType,
-    val defaultAllocationCents: Long,
+    val defaultAllocation: String,
 ) {
     fun toNewCategory() = NewCategory(
         name = name,
         type = type,
-        defaultAllocationCents = defaultAllocationCents,
+        defaultAllocationCents = BigDecimal(defaultAllocation).movePointRight(2).toLong(),
     )
 }
 
@@ -35,7 +36,7 @@ data class CategoryResponse(
     val id: Int,
     val name: String,
     val type: TransactionType,
-    val defaultAllocationCents: Long,
+    val defaultAllocation: String,
     val active: Boolean,
 ) {
     companion object {
@@ -43,7 +44,7 @@ data class CategoryResponse(
             id = category.id,
             name = category.name,
             type = category.type,
-            defaultAllocationCents = category.defaultAllocationCents,
+            defaultAllocation = BigDecimal(category.defaultAllocationCents).movePointLeft(2).toPlainString(),
             active = category.active,
         )
     }

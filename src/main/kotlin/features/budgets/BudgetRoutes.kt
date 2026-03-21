@@ -7,6 +7,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.put
 import io.ktor.server.routing.routing
+import java.math.BigDecimal
 
 fun Application.configureBudgetRoutes(service: BudgetService) {
     routing {
@@ -29,7 +30,8 @@ fun Application.configureBudgetRoutes(service: BudgetService) {
             val itemId = call.parameters["itemId"]?.toIntOrNull()
                 ?: return@put call.respond(HttpStatusCode.BadRequest)
             val request = call.receive<BudgetItemUpdateRequest>()
-            service.updateBudgetItem(itemId, request.allocationCents, request.snoozed)
+            val allocationCents = request.allocation?.let { BigDecimal(it).movePointRight(2).toLong() }
+            service.updateBudgetItem(itemId, allocationCents, request.snoozed)
             call.respond(HttpStatusCode.OK)
         }
     }
