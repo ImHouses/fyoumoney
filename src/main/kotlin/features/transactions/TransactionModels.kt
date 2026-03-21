@@ -11,11 +11,13 @@ data class Transaction(
     val type: TransactionType,
     val description: String,
     val date: LocalDate,
+    val budgetItemId: Int,
+    val categoryId: Int,
 )
 
 data class NewTransaction(
     val amount: BigDecimal,
-    val type: TransactionType,
+    val categoryId: Int,
     val description: String,
     val date: LocalDate,
 )
@@ -23,13 +25,13 @@ data class NewTransaction(
 @Serializable
 data class TransactionRequest(
     val amount: String,
-    val type: TransactionType,
+    val categoryId: Int,
     val description: String,
     val date: String,
 ) {
     fun toNewTransaction() = NewTransaction(
         amount = BigDecimal(amount),
-        type = type,
+        categoryId = categoryId,
         description = description,
         date = LocalDate.parse(date),
     )
@@ -42,6 +44,8 @@ data class TransactionResponse(
     val type: TransactionType,
     val description: String,
     val date: String,
+    val budgetItemId: Int,
+    val categoryId: Int,
 ) {
     companion object {
         fun from(transaction: Transaction) = TransactionResponse(
@@ -50,6 +54,8 @@ data class TransactionResponse(
             type = transaction.type,
             description = transaction.description,
             date = transaction.date.toString(),
+            budgetItemId = transaction.budgetItemId,
+            categoryId = transaction.categoryId,
         )
     }
 }
