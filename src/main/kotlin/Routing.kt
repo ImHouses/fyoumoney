@@ -1,5 +1,7 @@
 package dev.jcasas
 
+import dev.jcasas.features.categories.CategoryService
+import dev.jcasas.features.categories.configureCategoryRoutes
 import dev.jcasas.features.transactions.TransactionService
 import dev.jcasas.features.transactions.configureTransactionRoutes
 import io.ktor.server.application.Application
@@ -16,4 +18,6 @@ fun Application.configureRouting() {
     }
     val transactionService: TransactionService by inject()
     configureTransactionRoutes(transactionService)
+    val categoryService: CategoryService by inject()
+    configureCategoryRoutes(categoryService)
 }

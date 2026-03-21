@@ -1,0 +1,108 @@
+package dev.jcasas.features.categories
+
+import dev.jcasas.configureSerialization
+import io.ktor.client.request.delete
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
+import io.ktor.server.testing.ApplicationTestBuilder
+import io.ktor.server.testing.testApplication
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.transaction
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertContains
+import kotlin.test.assertEquals
+
+class CategoryRoutesTest {
+
+    @BeforeTest
+    fun setup() {
+        Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
+        transaction {
+            SchemaUtils.drop(Categories)
+            SchemaUtils.create(Categories)
+        }
+    }
+
+    private fun withApp(block: suspend ApplicationTestBuilder.() -> Unit) =
+        testApplication {
+            application {
+                configureSerialization()
+                configureCategoryRoutes(CategoryService(CategoryRepository()))
+            }
+            block()
+        }
+
+    @Test
+    fun `POST categories creates and returns 201`() = withApp {
+        val response = client.post("/categories") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+        }
+        assertEquals(HttpStatusCode.Created, response.status)
+    }
+
+    @Test
+    fun `GET categories returns all active categories`() = withApp {
+        client.post("/categories") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+        }
+        val response = client.get("/categories")
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertContains(response.bodyAsText(), "Food")
+    }
+
+    @Test
+    fun `GET categories by id returns the category`() = withApp {
+        val created = client.post("/categories") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+        }
+        val id = created.bodyAsText().trim()
+        val response = client.get("/categories/$id")
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertContains(response.bodyAsText(), "Food")
+    }
+
+    @Test
+    fun `GET categories by id returns 404 when not found`() = withApp {
+        val response = client.get("/categories/999")
+        assertEquals(HttpStatusCode.NotFound, response.status)
+    }
+
+    @Test
+    fun `PUT categories updates and returns 200`() = withApp {
+        val created = client.post("/categories") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+        }
+        val id = created.bodyAsText().trim()
+        val response = client.put("/categories/$id") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"name":"Groceries","type":"EXPENSE","defaultAllocationCents":60000}""")
+        }
+        assertEquals(HttpStatusCode.OK, response.status)
+    }
+
+    @Test
+    fun `DELETE categories soft-deletes and returns 200`() = withApp {
+        val created = client.post("/categories") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocationCents":50000}""")
+        }
+        val id = created.bodyAsText().trim()
+        val response = client.delete("/categories/$id")
+        assertEquals(HttpStatusCode.OK, response.status)
+        val allResponse = client.get("/categories")
+        val body = allResponse.bodyAsText()
+        assertEquals("[]", body)
+    }
+}
