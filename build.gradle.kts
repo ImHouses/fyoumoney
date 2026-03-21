@@ -34,6 +34,7 @@ dependencies {
     implementation("org.postgresql:postgresql:$postgresVersion")
     implementation("io.insert-koin:koin-ktor:$koinVersion")
     implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
+    implementation("io.ktor:ktor-server-cors")
     implementation("io.ktor:ktor-server-swagger")
     implementation("io.ktor:ktor-server-netty")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
