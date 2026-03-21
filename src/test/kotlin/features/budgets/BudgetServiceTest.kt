@@ -5,6 +5,7 @@ import dev.jcasas.features.categories.Categories
 import dev.jcasas.features.categories.CategoryRepository
 import dev.jcasas.features.categories.CategoryService
 import dev.jcasas.features.categories.NewCategory
+import dev.jcasas.features.transactions.Transactions
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -26,8 +27,8 @@ class BudgetServiceTest {
         val db = Database.connect("jdbc:h2:mem:test_budget_svc;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
         TransactionManager.defaultDatabase = db
         transaction(db) {
-            SchemaUtils.drop(BudgetItems, Budgets, Categories)
-            SchemaUtils.create(Categories, Budgets, BudgetItems)
+            SchemaUtils.drop(Transactions, BudgetItems, Budgets, Categories)
+            SchemaUtils.create(Categories, Budgets, BudgetItems, Transactions)
         }
         categoryService = CategoryService(CategoryRepository())
         budgetService = BudgetService(BudgetRepository(), categoryService)
