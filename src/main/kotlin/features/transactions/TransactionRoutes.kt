@@ -14,12 +14,19 @@ fun Application.configureTransactionRoutes(service: TransactionService) {
     routing {
         post("/transactions") {
             val request = call.receive<TransactionRequest>()
-            val id = service.create(request.toNewTransaction())
-            call.respond(HttpStatusCode.Created, id)
+            try {
+                val id = service.create(request.toNewTransaction())
+                call.respond(HttpStatusCode.Created, id)
+            } catch (e: IllegalArgumentException) {
+                call.respond(HttpStatusCode.UnprocessableEntity, mapOf("error" to e.message))
+            }
         }
 
         get("/transactions") {
-            val transactions = service.getAll().map { TransactionResponse.from(it) }
+            val categoryId = call.parameters["categoryId"]?.toIntOrNull()
+            val year = call.parameters["year"]?.toIntOrNull()
+            val month = call.parameters["month"]?.toIntOrNull()
+            val transactions = service.getAll(categoryId, year, month).map { TransactionResponse.from(it) }
             call.respond(HttpStatusCode.OK, transactions)
         }
 
@@ -35,8 +42,12 @@ fun Application.configureTransactionRoutes(service: TransactionService) {
             val id = call.parameters["id"]?.toIntOrNull()
                 ?: return@put call.respond(HttpStatusCode.BadRequest)
             val request = call.receive<TransactionRequest>()
-            service.update(id, request.toNewTransaction())
-            call.respond(HttpStatusCode.OK)
+            try {
+                service.update(id, request.toNewTransaction())
+                call.respond(HttpStatusCode.OK)
+            } catch (e: IllegalArgumentException) {
+                call.respond(HttpStatusCode.UnprocessableEntity, mapOf("error" to e.message))
+            }
         }
 
         delete("/transactions/{id}") {
