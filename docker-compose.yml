@@ -1,0 +1,20 @@
+# Local development only — do not use these credentials in production
+services:
+  db:
+    image: postgres:17
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: default
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "username"]
+      interval: 2s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  pgdata:
