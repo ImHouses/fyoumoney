@@ -1,0 +1,120 @@
+.budget-row {
+  display: grid;
+  grid-template-columns: 1fr 120px 120px 100px;
+  align-items: center;
+  padding: 14px 16px;
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.budget-row:hover {
+  background-color: var(--color-bg-card-hover);
+}
+
+.budget-row.snoozed {
+  opacity: 0.4;
+  filter: grayscale(0.6);
+}
+
+.budget-row-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.budget-row-emoji {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.budget-row-amount {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+  text-align: right;
+}
+
+.budget-row-remaining-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  background-color: var(--color-remaining-pill-bg);
+  color: var(--color-remaining-pill-text);
+  text-align: right;
+  margin-left: auto;
+}
+
+.budget-row-remaining-pill.over-budget {
+  background: none;
+  color: var(--color-over-budget-text);
+  padding: 0;
+}
+
+.budget-row-progress {
+  grid-column: 1 / -1;
+  height: 4px;
+  border-radius: 2px;
+  background-color: var(--color-border);
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.budget-row-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width var(--transition-base);
+}
+
+.budget-row-progress-fill.green {
+  background-color: var(--color-progress-green);
+}
+.budget-row-progress-fill.yellow {
+  background-color: var(--color-progress-yellow);
+}
+.budget-row-progress-fill.red {
+  background-color: var(--color-progress-red);
+}
+.budget-row-progress-fill.gray {
+  background-color: var(--color-progress-gray);
+}
+
+/* Mobile */
+.budget-row-mobile-right {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .budget-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .budget-row-amount,
+  .budget-row-remaining-pill {
+    display: none;
+  }
+
+  .budget-row-mobile-right {
+    display: block;
+    margin-left: auto;
+    text-align: right;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .budget-row-progress {
+    width: 100%;
+    flex-basis: 100%;
+    margin-top: 8px;
+  }
+}

@@ -1,0 +1,57 @@
+:root {
+  --color-progress-green: #10b981;
+  --color-progress-yellow: #f59e0b;
+  --color-progress-red: #ef4444;
+  --color-progress-gray: #6b7280;
+  --font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --sidebar-width: 280px;
+}
+
+[data-theme="light"] {
+  --color-bg-app: #f0efe9;
+  --color-bg-sidebar: #f7f7f3;
+  --color-bg-card: #ffffff;
+  --color-bg-card-hover: #fafaf8;
+  --color-text-primary: #111111;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+  --color-border: #e5e7eb;
+  --color-summary-bg: #f9fafb;
+  --color-summary-remaining-bg: #ecfdf5;
+  --color-summary-remaining-text: #059669;
+  --color-warning-bg: #fef2f2;
+  --color-warning-text: #dc2626;
+  --color-remaining-pill-bg: #059669;
+  --color-remaining-pill-text: #ffffff;
+  --color-btn-primary-bg: #111111;
+  --color-btn-primary-text: #ffffff;
+  --color-column-label: #9ca3af;
+  --color-over-budget-text: #dc2626;
+}
+
+[data-theme="dark"] {
+  --color-bg-app: #0a0a0a;
+  --color-bg-sidebar: #0f0f0f;
+  --color-bg-card: #1a1a1a;
+  --color-bg-card-hover: #222222;
+  --color-text-primary: #f5f5f5;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
+  --color-border: #2a2a2a;
+  --color-summary-bg: #141414;
+  --color-summary-remaining-bg: #052e1c;
+  --color-summary-remaining-text: #34d399;
+  --color-warning-bg: #2a1010;
+  --color-warning-text: #f87171;
+  --color-remaining-pill-bg: #059669;
+  --color-remaining-pill-text: #ffffff;
+  --color-btn-primary-bg: #f5f5f5;
+  --color-btn-primary-text: #0a0a0a;
+  --color-column-label: #6b7280;
+  --color-over-budget-text: #f87171;
+}
