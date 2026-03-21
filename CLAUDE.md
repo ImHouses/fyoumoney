@@ -61,6 +61,12 @@ postgres:
 
 Server starts on port `8080` by default.
 
+## API Documentation
+
+Swagger UI is available at [http://localhost:8080/swagger](http://localhost:8080/swagger) when the server is running in development mode (`ktor.development: true` in `application.yaml`).
+
+The OpenAPI spec is defined in `src/main/resources/openapi/documentation.yaml`. Swagger UI is disabled in production.
+
 ## Running Tests
 
 ```bash

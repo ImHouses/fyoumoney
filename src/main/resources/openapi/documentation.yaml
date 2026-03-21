@@ -1,0 +1,424 @@
+openapi: 3.0.3
+info:
+  title: fyoumoney API
+  description: Personal finance application API
+  version: 0.0.1
+
+tags:
+  - name: Categories
+    description: Global budget categories (e.g., Food, Salary, Transport)
+  - name: Budgets
+    description: Monthly budgets with per-category allocations and spent totals
+  - name: Transactions
+    description: Income and expense transactions linked to budget items
+
+paths:
+  /categories:
+    post:
+      tags: [Categories]
+      summary: Create a category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: The created category ID
+    get:
+      tags: [Categories]
+      summary: List all active categories
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryResponse'
+
+  /categories/{id}:
+    get:
+      tags: [Categories]
+      summary: Get a category by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+        '404':
+          description: Category not found
+    put:
+      tags: [Categories]
+      summary: Update a category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+      responses:
+        '200':
+          description: Updated
+    delete:
+      tags: [Categories]
+      summary: Soft-delete a category
+      description: Sets active to false. Existing budget items are preserved, but future budgets will not include this category.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Deleted
+
+  /budgets:
+    get:
+      tags: [Budgets]
+      summary: List all budgets
+      parameters:
+        - name: year
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by year
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BudgetSummaryResponse'
+
+  /budgets/{year}/{month}:
+    get:
+      tags: [Budgets]
+      summary: Get or create a monthly budget
+      description: Returns the budget for the given month. If none exists, auto-creates one with all active categories and their default allocations.
+      parameters:
+        - name: year
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: month
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetResponse'
+        '400':
+          description: Invalid year or month
+
+  /budgets/{year}/{month}/items/{itemId}:
+    put:
+      tags: [Budgets]
+      summary: Update a budget item
+      description: Update allocation or snoozed status for a budget item.
+      parameters:
+        - name: year
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: month
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BudgetItemUpdateRequest'
+      responses:
+        '200':
+          description: Updated
+
+  /transactions:
+    post:
+      tags: [Transactions]
+      summary: Create a transaction
+      description: Creates a transaction linked to a budget item. The budget is auto-created if needed. Type is inferred from the category.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: The created transaction ID
+        '422':
+          description: Validation error (e.g., category not found or soft-deleted without existing budget item)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      tags: [Transactions]
+      summary: List transactions
+      parameters:
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by category ID
+        - name: year
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by year
+        - name: month
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by month
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransactionResponse'
+
+  /transactions/{id}:
+    get:
+      tags: [Transactions]
+      summary: Get a transaction by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '404':
+          description: Transaction not found
+    put:
+      tags: [Transactions]
+      summary: Update a transaction
+      description: If categoryId or date changes, the budget item is re-resolved. Type is re-inferred from the new category.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+      responses:
+        '200':
+          description: Updated
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags: [Transactions]
+      summary: Delete a transaction
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Deleted
+
+components:
+  schemas:
+    TransactionType:
+      type: string
+      enum: [INCOME, EXPENSE]
+
+    CategoryRequest:
+      type: object
+      required: [name, type, defaultAllocation]
+      properties:
+        name:
+          type: string
+          example: Food
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        defaultAllocation:
+          type: string
+          description: Default monthly allocation as decimal string
+          example: "500.00"
+
+    CategoryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        defaultAllocation:
+          type: string
+          description: Default monthly allocation as decimal string
+        active:
+          type: boolean
+
+    TransactionRequest:
+      type: object
+      required: [amount, categoryId, description, date]
+      properties:
+        amount:
+          type: string
+          description: Decimal amount as string
+          example: "25.50"
+        categoryId:
+          type: integer
+          example: 1
+        description:
+          type: string
+          example: Grocery shopping
+        date:
+          type: string
+          format: date
+          example: "2026-03-20"
+
+    TransactionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: string
+          description: Decimal amount as string
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        description:
+          type: string
+        date:
+          type: string
+          format: date
+        budgetItemId:
+          type: integer
+        categoryId:
+          type: integer
+
+    BudgetItemUpdateRequest:
+      type: object
+      properties:
+        allocation:
+          type: string
+          description: Monthly allocation as decimal string
+          example: "600.00"
+        snoozed:
+          type: boolean
+
+    BudgetItemResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        categoryId:
+          type: integer
+        categoryName:
+          type: string
+        categoryType:
+          $ref: '#/components/schemas/TransactionType'
+        allocation:
+          type: string
+          description: Monthly allocation as decimal string
+        spent:
+          type: string
+          description: Total spent as decimal string
+        snoozed:
+          type: boolean
+
+    BudgetResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        year:
+          type: integer
+        month:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BudgetItemResponse'
+
+    BudgetSummaryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        year:
+          type: integer
+        month:
+          type: integer
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string

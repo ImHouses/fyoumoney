@@ -1,4 +1,5 @@
 ktor:
+  development: true
   application:
     modules:
       - dev.jcasas.ApplicationKt.module
