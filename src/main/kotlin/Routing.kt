@@ -1,5 +1,7 @@
 package dev.jcasas
 
+import dev.jcasas.features.budgets.BudgetService
+import dev.jcasas.features.budgets.configureBudgetRoutes
 import dev.jcasas.features.categories.CategoryService
 import dev.jcasas.features.categories.configureCategoryRoutes
 import dev.jcasas.features.transactions.TransactionService
@@ -20,4 +22,6 @@ fun Application.configureRouting() {
     configureTransactionRoutes(transactionService)
     val categoryService: CategoryService by inject()
     configureCategoryRoutes(categoryService)
+    val budgetService: BudgetService by inject()
+    configureBudgetRoutes(budgetService)
 }
