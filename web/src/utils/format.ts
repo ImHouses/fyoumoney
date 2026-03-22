@@ -82,3 +82,23 @@ const monthNames = [
 export function formatPeriod(year: number, month: number): string {
   return `${monthNames[month - 1]} ${year}`;
 }
+
+export function formatAmountDisplay(value: string): string {
+  const digits = value.replace(/[^0-9]/g, '');
+  if (!digits) return '';
+  const cents = digits.padStart(3, '0');
+  const dollars = cents.slice(0, -2);
+  const decimal = cents.slice(-2);
+  const trimmedDollars = dollars.replace(/^0+/, '') || '0';
+  const withCommas = trimmedDollars.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return `$${withCommas}.${decimal}`;
+}
+
+export function toRawAmount(value: string): string {
+  const digits = value.replace(/[^0-9]/g, '');
+  if (!digits) return '';
+  const cents = digits.padStart(3, '0');
+  const dollars = cents.slice(0, -2);
+  const decimal = cents.slice(-2);
+  return `${parseInt(dollars, 10) || 0}.${decimal}`;
+}

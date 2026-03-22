@@ -1,0 +1,123 @@
+.category-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-base);
+}
+
+.category-row-emoji {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.category-row-name {
+  font-size: 15px;
+  font-weight: 500;
+  flex: 1;
+}
+
+.category-row-allocation {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.category-row-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.category-row-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.category-row-btn:hover {
+  background-color: var(--color-bg-card-hover);
+  color: var(--color-text-primary);
+}
+
+.category-row-btn.delete:hover {
+  color: var(--color-warning-text);
+}
+
+/* Edit mode */
+.category-row-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-base);
+}
+
+.category-row-edit-fields {
+  display: flex;
+  gap: 10px;
+}
+
+.category-row-edit-fields input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: 14px;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.category-row-edit-fields input:focus {
+  border-color: var(--color-text-secondary);
+}
+
+.category-row-edit-fields input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.category-row-edit-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.category-row-edit-btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.category-row-edit-btn:hover {
+  opacity: 0.85;
+}
+
+.category-row-edit-btn.save {
+  background-color: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-text);
+}
+
+.category-row-edit-btn.cancel {
+  background: transparent;
+  color: var(--color-text-muted);
+}
