@@ -46,10 +46,25 @@
   font-size: 13px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  background-color: var(--color-remaining-pill-bg);
-  color: var(--color-remaining-pill-text);
   text-align: right;
   margin-left: auto;
+}
+
+.budget-row-remaining-pill.green {
+  background-color: var(--color-progress-green);
+  color: #ffffff;
+}
+.budget-row-remaining-pill.yellow {
+  background-color: var(--color-progress-yellow);
+  color: #ffffff;
+}
+.budget-row-remaining-pill.red {
+  background-color: var(--color-progress-red);
+  color: #ffffff;
+}
+.budget-row-remaining-pill.gray {
+  background-color: var(--color-progress-gray);
+  color: #ffffff;
 }
 
 .budget-row-remaining-pill.over-budget {

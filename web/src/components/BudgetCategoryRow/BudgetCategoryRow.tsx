@@ -28,7 +28,7 @@ export function BudgetCategoryRow({ item }: BudgetCategoryRowProps) {
       <span className="budget-row-amount">{formatCurrency(item.allocation)}</span>
       <span className="budget-row-amount">{formatCurrency(item.spent)}</span>
 
-      <span className={`budget-row-remaining-pill${isOverBudget ? ' over-budget' : ''}`}>
+      <span className={`budget-row-remaining-pill ${isOverBudget ? 'over-budget' : progressColor}`}>
         {isOverBudget ? `-${formatCurrency(String(Math.abs(remaining)))}` : formatCurrency(String(remaining))}
       </span>
 
