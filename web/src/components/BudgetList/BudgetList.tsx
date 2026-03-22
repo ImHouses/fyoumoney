@@ -23,7 +23,7 @@ export function BudgetList({ budget, year, month, onPrev, onNext }: BudgetListPr
 
   useEffect(() => {
     setItems(budget.items);
-  }, [budget.id]);
+  }, [budget.id, budget.items]);
 
   const handleToggleSnooze = async (itemId: number) => {
     const target = items.find(item => item.id === itemId);

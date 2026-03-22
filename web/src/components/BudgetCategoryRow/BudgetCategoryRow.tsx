@@ -55,18 +55,20 @@ export function BudgetCategoryRow({ item, year, month, onToggleSnooze }: BudgetC
         <div>{formatCurrency(item.spent)} {isIncome ? 'received' : 'spent'}</div>
       </div>
 
-      <button
-        className="budget-row-snooze-btn"
-        onClick={e => {
-          e.preventDefault();
-          e.stopPropagation();
-          onToggleSnooze?.(item.id);
-        }}
-        aria-label={item.snoozed ? 'Wake category' : 'Snooze category'}
-        aria-pressed={item.snoozed}
-      >
-        {item.snoozed ? '💤' : '⚡'}
-      </button>
+      {!isIncome && (
+        <button
+          className="budget-row-snooze-btn"
+          onClick={e => {
+            e.preventDefault();
+            e.stopPropagation();
+            onToggleSnooze?.(item.id);
+          }}
+          aria-label={item.snoozed ? 'Wake category' : 'Snooze category'}
+          aria-pressed={item.snoozed}
+        >
+          {item.snoozed ? '⚡' : '💤'}
+        </button>
+      )}
 
       {!isIncome && (
         <div className="budget-row-progress">
