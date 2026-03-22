@@ -13,9 +13,10 @@ interface BudgetCategoryRowProps {
   item: BudgetItemResponse;
   year: number;
   month: number;
+  onToggleSnooze?: (itemId: number) => void;
 }
 
-export function BudgetCategoryRow({ item, year, month }: BudgetCategoryRowProps) {
+export function BudgetCategoryRow({ item, year, month, onToggleSnooze }: BudgetCategoryRowProps) {
   const isIncome = item.categoryType === 'INCOME';
   const remaining = parseDecimal(item.allocation) - parseDecimal(item.spent);
   const isOverBudget = remaining < 0;
@@ -53,6 +54,19 @@ export function BudgetCategoryRow({ item, year, month }: BudgetCategoryRowProps)
         {!isIncome && <div>{formatCurrency(item.allocation)} assigned</div>}
         <div>{formatCurrency(item.spent)} {isIncome ? 'received' : 'spent'}</div>
       </div>
+
+      <button
+        className="budget-row-snooze-btn"
+        onClick={e => {
+          e.preventDefault();
+          e.stopPropagation();
+          onToggleSnooze?.(item.id);
+        }}
+        aria-label={item.snoozed ? 'Wake category' : 'Snooze category'}
+        aria-pressed={item.snoozed}
+      >
+        {item.snoozed ? '💤' : '⚡'}
+      </button>
 
       {!isIncome && (
         <div className="budget-row-progress">
