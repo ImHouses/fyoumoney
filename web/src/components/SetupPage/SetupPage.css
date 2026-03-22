@@ -1,0 +1,120 @@
+.setup-page {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.setup-header {
+  margin-bottom: 36px;
+}
+
+.setup-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.setup-subtitle {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.setup-section {
+  margin-bottom: 28px;
+}
+
+.setup-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+}
+
+.setup-section-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.setup-add-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.setup-add-btn:hover {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-primary);
+}
+
+.setup-summary {
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-summary-bg);
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  transition: background-color var(--transition-base);
+}
+
+.setup-summary-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.setup-summary-label {
+  color: var(--color-text-secondary);
+}
+
+.setup-summary-value {
+  font-weight: 600;
+}
+
+.setup-summary-value.remaining {
+  color: var(--color-summary-remaining-text);
+}
+
+.setup-done-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-text);
+  font-family: var(--font-family);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--transition-fast), background-color var(--transition-base);
+}
+
+.setup-done-btn:hover {
+  opacity: 0.9;
+}
+
+.setup-done-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.setup-error {
+  color: var(--color-warning-text);
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 12px;
+}
