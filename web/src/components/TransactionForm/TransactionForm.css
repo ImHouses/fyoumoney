@@ -1,0 +1,112 @@
+.transaction-form-page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+.transaction-form-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.transaction-form-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.transaction-form-back:hover {
+  background-color: var(--color-bg-card-hover);
+}
+
+.transaction-form-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.transaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.transaction-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.transaction-form-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.transaction-form-input,
+.transaction-form-select {
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-card);
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: 15px;
+  outline: none;
+  transition: border-color var(--transition-fast), background-color var(--transition-base);
+}
+
+.transaction-form-input:focus,
+.transaction-form-select:focus {
+  border-color: var(--color-text-secondary);
+}
+
+.transaction-form-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.transaction-form-select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.transaction-form-submit {
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-text);
+  font-family: var(--font-family);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--transition-fast), background-color var(--transition-base);
+  margin-top: 8px;
+}
+
+.transaction-form-submit:hover {
+  opacity: 0.9;
+}
+
+.transaction-form-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.transaction-form-error {
+  color: var(--color-warning-text);
+  font-size: 14px;
+  text-align: center;
+}
