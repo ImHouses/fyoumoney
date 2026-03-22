@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { getCategories, createTransaction } from '../../api/budgetApi';
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
+import { getCategories, getTransaction, createTransaction, updateTransaction } from '../../api/budgetApi';
 import type { CategoryResponse, TransactionType } from '../../types/budget';
 import { formatAmountDisplay, toRawAmount } from '../../utils/format';
 import './TransactionForm.css';
@@ -8,6 +8,8 @@ import './TransactionForm.css';
 export function TransactionForm() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { id: editId } = useParams<{ id: string }>();
+  const isEditing = editId != null;
 
   const [allCategories, setAllCategories] = useState<CategoryResponse[]>([]);
   const [transactionType, setTransactionType] = useState<TransactionType>('EXPENSE');
@@ -17,6 +19,7 @@ export function TransactionForm() {
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(isEditing);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -24,14 +27,33 @@ export function TransactionForm() {
   }, []);
 
   useEffect(() => {
-    const catParam = searchParams.get('categoryId');
-    if (catParam) setCategoryId(catParam);
-  }, [searchParams]);
+    if (!isEditing) {
+      const catParam = searchParams.get('categoryId');
+      if (catParam) setCategoryId(catParam);
+    }
+  }, [searchParams, isEditing]);
 
-  const filteredCategories = allCategories.filter(c => c.type === transactionType);
+  useEffect(() => {
+    if (!isEditing) return;
 
-  // Reset category selection when switching type
+    setLoading(true);
+    getTransaction(Number(editId))
+      .then(tx => {
+        setRawAmount(tx.amount);
+        setDisplayAmount(formatAmountDisplay(tx.amount.replace('.', '')));
+        setCategoryId(String(tx.categoryId));
+        setDescription(tx.description);
+        setDate(tx.date);
+        setTransactionType(tx.type);
+      })
+      .catch(err => setError(err instanceof Error ? err.message : 'Failed to load transaction'))
+      .finally(() => setLoading(false));
+  }, [editId, isEditing]);
+
+  const filteredCategories = allCategories.filter(cat => cat.type === transactionType);
+
   const handleTypeChange = (type: TransactionType) => {
+    if (isEditing) return;
     setTransactionType(type);
     setCategoryId('');
   };
@@ -48,20 +70,38 @@ export function TransactionForm() {
     setError(null);
     setSubmitting(true);
 
+    const body = {
+      amount: rawAmount,
+      categoryId: Number(categoryId),
+      description,
+      date,
+    };
+
     try {
-      await createTransaction({
-        amount: rawAmount,
-        categoryId: Number(categoryId),
-        description,
-        date,
-      });
+      if (isEditing) {
+        await updateTransaction(Number(editId), body);
+      } else {
+        await createTransaction(body);
+      }
       navigate(-1);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create transaction');
+      setError(err instanceof Error ? err.message : `Failed to ${isEditing ? 'update' : 'create'} transaction`);
     } finally {
       setSubmitting(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="transaction-form-page">
+        <div className="transaction-form-header">
+          <button className="transaction-form-back" onClick={() => navigate(-1)} aria-label="Go back">‹</button>
+          <h1 className="transaction-form-title">{isEditing ? 'Edit Transaction' : 'New Transaction'}</h1>
+        </div>
+        <div style={{ color: 'var(--color-text-muted)', padding: '40px 0' }}>Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="transaction-form-page">
@@ -69,16 +109,17 @@ export function TransactionForm() {
         <button className="transaction-form-back" onClick={() => navigate(-1)} aria-label="Go back">
           ‹
         </button>
-        <h1 className="transaction-form-title">New Transaction</h1>
+        <h1 className="transaction-form-title">{isEditing ? 'Edit Transaction' : 'New Transaction'}</h1>
       </div>
 
-      <div className="segmented-btn" role="radiogroup" aria-label="Transaction type">
+      <div className={`segmented-btn${isEditing ? ' disabled' : ''}`} role="radiogroup" aria-label="Transaction type">
         <button
           role="radio"
           aria-checked={transactionType === 'EXPENSE'}
           className={`segmented-btn-item${transactionType === 'EXPENSE' ? ' selected' : ''}`}
           onClick={() => handleTypeChange('EXPENSE')}
           type="button"
+          disabled={isEditing}
         >
           Expense
         </button>
@@ -88,6 +129,7 @@ export function TransactionForm() {
           className={`segmented-btn-item${transactionType === 'INCOME' ? ' selected' : ''}`}
           onClick={() => handleTypeChange('INCOME')}
           type="button"
+          disabled={isEditing}
         >
           Income
         </button>
@@ -116,6 +158,7 @@ export function TransactionForm() {
             value={categoryId}
             onChange={e => setCategoryId(e.target.value)}
             required
+            disabled={isEditing}
           >
             <option value="">Select a category</option>
             {filteredCategories.map(cat => (
@@ -155,7 +198,10 @@ export function TransactionForm() {
           className="transaction-form-submit"
           disabled={submitting}
         >
-          {submitting ? 'Creating...' : 'Create Transaction'}
+          {submitting
+            ? (isEditing ? 'Updating...' : 'Creating...')
+            : (isEditing ? 'Update Transaction' : 'Create Transaction')
+          }
         </button>
       </form>
     </div>

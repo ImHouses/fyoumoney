@@ -7,6 +7,8 @@ import { SummaryPanel } from './components/SummaryPanel/SummaryPanel';
 import { BudgetList } from './components/BudgetList/BudgetList';
 import { TransactionForm } from './components/TransactionForm/TransactionForm';
 import { SetupPage } from './components/SetupPage/SetupPage';
+import { EditPlan } from './components/EditPlan/EditPlan';
+import { TransactionList } from './components/TransactionList/TransactionList';
 import { useBudget } from './hooks/useBudget';
 import { useCategories } from './hooks/useCategories';
 
@@ -83,6 +85,9 @@ function App() {
         <Route path="/" element={<RootRedirect />} />
         <Route path="/setup" element={<SetupPage />} />
         <Route path="/transactions/new" element={<TransactionForm />} />
+        <Route path="/transactions/:id/edit" element={<TransactionForm />} />
+        <Route path="/budgets/:year/:month/edit" element={<EditPlan />} />
+        <Route path="/budgets/:year/:month/items/:itemId/transactions" element={<TransactionList />} />
       </Routes>
     </BrowserRouter>
   );

@@ -77,11 +77,13 @@ export const getTransactions = (params?: {
   categoryId?: number;
   year?: number;
   month?: number;
+  budgetItemId?: number;
 }) => {
   const qs = new URLSearchParams();
   if (params?.categoryId != null) qs.set('categoryId', String(params.categoryId));
   if (params?.year != null) qs.set('year', String(params.year));
   if (params?.month != null) qs.set('month', String(params.month));
+  if (params?.budgetItemId != null) qs.set('budgetItemId', String(params.budgetItemId));
   const query = qs.toString();
   return request<TransactionResponse[]>(`/transactions${query ? `?${query}` : ''}`);
 };

@@ -1,0 +1,148 @@
+.transaction-list-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+.transaction-list-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.transaction-list-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.transaction-list-back:hover {
+  background-color: var(--color-bg-card-hover);
+}
+
+.transaction-list-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.transaction-list-state {
+  padding: 24px 0;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.transaction-list-error {
+  color: var(--color-warning-text);
+}
+
+.transaction-list-empty {
+  color: var(--color-text-muted);
+}
+
+.transaction-list-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* TransactionRow styles */
+.transaction-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.transaction-row:hover {
+  background-color: var(--color-bg-card-hover);
+}
+
+.transaction-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.transaction-row-date {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.transaction-row-description {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.transaction-row-no-description {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.transaction-row-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.transaction-row-amount {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.transaction-row-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.transaction-row-btn {
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.transaction-row-btn:hover {
+  background-color: var(--color-bg-card-hover);
+}
+
+.transaction-row-delete.confirming {
+  color: var(--color-warning-text);
+  border-color: var(--color-warning-text);
+}
+
+.transaction-row-delete.confirming:hover {
+  background-color: transparent;
+}

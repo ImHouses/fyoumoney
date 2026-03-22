@@ -6,10 +6,16 @@
   background-color: var(--color-bg-card);
   border-radius: var(--radius-md);
   transition: background-color var(--transition-fast);
+  text-decoration: none;
+  color: inherit;
 }
 
 .budget-row:hover {
   background-color: var(--color-bg-card-hover);
+}
+
+.budget-row:hover .budget-row-category-name {
+  text-decoration: underline;
 }
 
 .budget-row.snoozed {

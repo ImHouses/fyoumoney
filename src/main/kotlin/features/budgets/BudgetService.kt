@@ -37,7 +37,7 @@ class BudgetService(
         val spentByItem = getSpentByBudgetItems(items.map { it.id })
 
         var totalExpenseSpentCents = 0L
-        var totalIncomeAllocationCents = 0L
+        var totalIncomeSpentCents = 0L
 
         val itemResponses =
             items.map { item ->
@@ -46,7 +46,7 @@ class BudgetService(
 
                 when (category.type) {
                     TransactionType.EXPENSE -> totalExpenseSpentCents += itemSpentCents
-                    TransactionType.INCOME -> totalIncomeAllocationCents += item.allocationCents
+                    TransactionType.INCOME -> totalIncomeSpentCents += itemSpentCents
                 }
 
                 BudgetItemResponse(
@@ -60,7 +60,7 @@ class BudgetService(
                 )
             }
 
-        val remainingCents = totalIncomeAllocationCents - totalExpenseSpentCents
+        val remainingCents = totalIncomeSpentCents - totalExpenseSpentCents
 
         return BudgetResponse(
             id = budget.id,

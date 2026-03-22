@@ -28,13 +28,19 @@ export function BudgetList({ budget, year, month, onPrev, onNext }: BudgetListPr
             <h1 className="budget-list-title">Budget List</h1>
             <p className="budget-list-subtitle">{formatPeriod(year, month)}</p>
           </div>
-          <Link to="/transactions/new" className="budget-list-create-btn">+ Create</Link>
+          <div className="budget-list-header-actions">
+            <Link to={`/budgets/${year}/${month}/edit`} className="budget-list-create-btn">Edit Plan</Link>
+            <Link to="/transactions/new" className="budget-list-create-btn">+ Create</Link>
+          </div>
         </div>
         <div className="budget-list-period-mobile">
           <button className="period-nav-btn" onClick={onPrev} aria-label="Previous month">‹</button>
           <span className="period-nav-label">{formatPeriod(year, month)}</span>
           <button className="period-nav-btn" onClick={onNext} aria-label="Next month">›</button>
-          <Link to="/transactions/new" className="budget-list-create-btn mobile">+ Create</Link>
+          <div className="budget-list-mobile-actions">
+            <Link to={`/budgets/${year}/${month}/edit`} className="budget-list-create-btn mobile">Edit Plan</Link>
+            <Link to="/transactions/new" className="budget-list-create-btn mobile">+ Create</Link>
+          </div>
         </div>
       </div>
 
@@ -49,7 +55,7 @@ export function BudgetList({ budget, year, month, onPrev, onNext }: BudgetListPr
         {sorted.length === 0 ? (
           <div className="budget-list-empty">No budget items for this period.</div>
         ) : (
-          sorted.map(item => <BudgetCategoryRow key={item.id} item={item} />)
+          sorted.map(item => <BudgetCategoryRow key={item.id} item={item} year={year} month={month} />)
         )}
       </div>
     </div>

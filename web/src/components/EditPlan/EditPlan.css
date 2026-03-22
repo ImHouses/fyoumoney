@@ -1,0 +1,180 @@
+.edit-plan-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.edit-plan-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.edit-plan-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.edit-plan-back:hover {
+  background-color: var(--color-bg-card-hover);
+}
+
+.edit-plan-title {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.edit-plan-period {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 32px;
+}
+
+.edit-plan-status {
+  color: var(--color-text-muted);
+  padding: 40px 0;
+}
+
+.edit-plan-error {
+  color: var(--color-warning-text);
+  padding: 40px 0;
+}
+
+.edit-plan-section {
+  margin-bottom: 32px;
+}
+
+.edit-plan-summary {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.edit-plan-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.edit-plan-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.edit-plan-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.edit-plan-item:hover {
+  background-color: var(--color-bg-card-hover);
+}
+
+.edit-plan-item-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.edit-plan-item-link:hover .edit-plan-item-name {
+  text-decoration: underline;
+}
+
+.edit-plan-item-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.edit-plan-item-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.edit-plan-item-amount {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.edit-plan-item-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-plan-item-input {
+  width: 120px;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.edit-plan-item-input:focus {
+  outline: none;
+  border-color: var(--color-text-primary);
+}
+
+.edit-plan-item-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.edit-plan-item-btn:hover {
+  background-color: var(--color-bg-card-hover);
+}
+
+.edit-plan-item-btn.save {
+  background-color: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-text);
+  border-color: var(--color-btn-primary-bg);
+}
+
+.edit-plan-item-btn.cancel {
+  color: var(--color-text-secondary);
+}
+
+.edit-plan-item-error {
+  font-size: 12px;
+  color: var(--color-warning-text);
+  padding: 4px 16px 0;
+}
+
+.edit-plan-empty {
+  text-align: center;
+  padding: 20px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}

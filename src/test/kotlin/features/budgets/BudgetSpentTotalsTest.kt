@@ -86,6 +86,7 @@ class BudgetSpentTotalsTest {
 
             val budget = budgetService.getOrCreateBudget(2026, 3)
 
+            // remaining = incomeTransactions(3000) - expenseTransactions(100)
             assertEquals("100.00", budget.spent)
             assertEquals("2900.00", budget.remaining)
         }

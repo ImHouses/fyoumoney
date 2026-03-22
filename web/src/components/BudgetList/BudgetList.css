@@ -19,6 +19,17 @@
   color: var(--color-text-secondary);
 }
 
+.budget-list-header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.budget-list-mobile-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
 .budget-list-create-btn {
   display: inline-flex;
   align-items: center;
@@ -102,7 +113,7 @@
 }
 
 @media (max-width: 768px) {
-  .budget-list-header-top .budget-list-create-btn {
+  .budget-list-header-actions {
     display: none;
   }
 
@@ -115,7 +126,6 @@
 
   .budget-list-create-btn.mobile {
     display: inline-flex;
-    margin-left: auto;
   }
 
   .budget-list-columns {

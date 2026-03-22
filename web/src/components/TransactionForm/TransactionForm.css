@@ -69,6 +69,11 @@
   color: var(--color-btn-primary-text);
 }
 
+.segmented-btn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .transaction-form {
   display: flex;
   flex-direction: column;

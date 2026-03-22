@@ -73,6 +73,11 @@ The OpenAPI spec is defined in `src/main/resources/openapi/documentation.yaml`. 
 ./gradlew test
 ```
 
+## Frontend UI Conventions
+
+- **List pages** (TransactionList, EditPlan, SetupPage): `max-width: 600px`. Each list item is a separate card (`background-color: var(--color-bg-card)`, `border-radius: var(--radius-md)`) with `gap: 6px` between them. Do not group items in a single bordered container with dividers.
+- **Form pages** (TransactionForm): `max-width: 480px`.
+
 ## Package
 
 `dev.jcasas`

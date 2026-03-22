@@ -53,6 +53,7 @@ class TransactionRepository {
         categoryId: Int? = null,
         year: Int? = null,
         month: Int? = null,
+        budgetItemId: Int? = null,
     ): List<Transaction> =
         newSuspendedTransaction(Dispatchers.IO) {
             val query =
@@ -69,6 +70,9 @@ class TransactionRepository {
             }
             if (month != null) {
                 query.andWhere { Budgets.month eq month }
+            }
+            if (budgetItemId != null) {
+                query.andWhere { Transactions.budgetItemId eq budgetItemId }
             }
 
             query.map { row ->

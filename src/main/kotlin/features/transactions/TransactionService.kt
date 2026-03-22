@@ -21,7 +21,8 @@ class TransactionService(
         categoryId: Int? = null,
         year: Int? = null,
         month: Int? = null,
-    ): List<Transaction> = repository.findAll(categoryId, year, month)
+        budgetItemId: Int? = null,
+    ): List<Transaction> = repository.findAll(categoryId, year, month, budgetItemId)
 
     suspend fun update(
         id: Int,
