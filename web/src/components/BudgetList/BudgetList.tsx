@@ -49,6 +49,7 @@ export function BudgetList({ budget, year, month, onPrev, onNext }: BudgetListPr
         <span>Assigned</span>
         <span>Spent</span>
         <span>Remaining</span>
+        <span />
       </div>
 
       <div className="budget-list-items">
