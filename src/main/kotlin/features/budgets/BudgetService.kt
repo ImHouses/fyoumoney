@@ -16,15 +16,17 @@ class BudgetService(
         year: Int,
         month: Int,
     ): BudgetResponse {
+        val activeCategories = categoryService.getAllActive()
+        val categoryMap = activeCategories.associateBy { it.id }
+
         val budget =
             repository.findBudgetByYearMonth(year, month)
-                ?: autoCreateBudget(year, month)
+                ?: autoCreateBudget(year, month, activeCategories.map { it.id to it.defaultAllocationCents })
 
         var items = repository.findBudgetItemsByBudgetId(budget.id)
 
         // Add budget items for any active categories missing from this budget
         val existingCategoryIds = items.map { it.categoryId }.toSet()
-        val activeCategories = categoryService.getAllActive()
         val missing = activeCategories.filter { it.id !in existingCategoryIds }
         if (missing.isNotEmpty()) {
             val newItems =
@@ -40,8 +42,8 @@ class BudgetService(
         var totalIncomeSpentCents = 0L
 
         val itemResponses =
-            items.map { item ->
-                val category = categoryService.getById(item.categoryId)!!
+            items.mapNotNull { item ->
+                val category = categoryMap[item.categoryId] ?: return@mapNotNull null
                 val itemSpentCents = spentByItem[item.id] ?: 0L
 
                 when (category.type) {
@@ -75,11 +77,8 @@ class BudgetService(
     private suspend fun autoCreateBudget(
         year: Int,
         month: Int,
-    ): Budget {
-        val activeCategories = categoryService.getAllActive()
-        val items = activeCategories.map { it.id to it.defaultAllocationCents }
-        return repository.createBudgetWithItems(year, month, items)
-    }
+        categoryItems: List<Pair<Int, Long>>,
+    ): Budget = repository.createBudgetWithItems(year, month, categoryItems)
 
     suspend fun findBudgetItemForTransaction(
         categoryId: Int,
@@ -88,7 +87,10 @@ class BudgetService(
     ): BudgetItem? {
         val budget =
             repository.findBudgetByYearMonth(year, month)
-                ?: autoCreateBudget(year, month)
+                ?: run {
+                    val activeCategories = categoryService.getAllActive()
+                    autoCreateBudget(year, month, activeCategories.map { it.id to it.defaultAllocationCents })
+                }
 
         return repository.findBudgetItemByBudgetAndCategory(budget.id, categoryId)
             ?: run {

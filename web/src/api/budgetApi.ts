@@ -4,7 +4,6 @@ import type {
   BudgetResponse,
   BudgetSummaryResponse,
   BudgetItemUpdateRequest,
-  BudgetItemResponse,
   TransactionRequest,
   TransactionResponse,
 } from '../types/budget';
@@ -67,7 +66,7 @@ export const updateBudgetItem = (
   itemId: number,
   body: BudgetItemUpdateRequest,
 ) =>
-  request<BudgetItemResponse>(`/budgets/${year}/${month}/items/${itemId}`, {
+  request<void>(`/budgets/${year}/${month}/items/${itemId}`, {
     method: 'PUT',
     body: JSON.stringify(body),
   });
@@ -92,10 +91,10 @@ export const getTransaction = (id: number) =>
   request<TransactionResponse>(`/transactions/${id}`);
 
 export const createTransaction = (body: TransactionRequest) =>
-  request<TransactionResponse>('/transactions', { method: 'POST', body: JSON.stringify(body) });
+  request<number>('/transactions', { method: 'POST', body: JSON.stringify(body) });
 
 export const updateTransaction = (id: number, body: Partial<TransactionRequest>) =>
-  request<TransactionResponse>(`/transactions/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+  request<void>(`/transactions/${id}`, { method: 'PUT', body: JSON.stringify(body) });
 
 export const deleteTransaction = (id: number) =>
   request<void>(`/transactions/${id}`, { method: 'DELETE' });
