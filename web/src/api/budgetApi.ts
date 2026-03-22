@@ -43,7 +43,10 @@ export const getCategory = (id: number) =>
   request<CategoryResponse>(`/categories/${id}`);
 
 export const createCategory = (body: CategoryRequest) =>
-  request<CategoryResponse>('/categories', { method: 'POST', body: JSON.stringify(body) });
+  request<number>('/categories', { method: 'POST', body: JSON.stringify(body) });
+
+export const createCategories = (body: CategoryRequest[]) =>
+  request<number[]>('/categories/batch', { method: 'POST', body: JSON.stringify(body) });
 
 export const updateCategory = (id: number, body: Partial<CategoryRequest>) =>
   request<CategoryResponse>(`/categories/${id}`, { method: 'PUT', body: JSON.stringify(body) });
