@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import type { BudgetResponse } from '../../types/budget';
+import type { BudgetItemResponse, BudgetResponse } from '../../types/budget';
+import { updateBudgetItem } from '../../api/budgetApi';
 import { formatPeriod } from '../../utils/format';
 import { BudgetCategoryRow } from '../BudgetCategoryRow/BudgetCategoryRow';
 import './BudgetList.css';
@@ -12,8 +14,36 @@ interface BudgetListProps {
   onNext: () => void;
 }
 
+function setSnoozed(items: BudgetItemResponse[], itemId: number, snoozed: boolean): BudgetItemResponse[] {
+  return items.map(item => (item.id === itemId ? { ...item, snoozed } : item));
+}
+
 export function BudgetList({ budget, year, month, onPrev, onNext }: BudgetListProps) {
-  const sorted = [...budget.items]
+  const [items, setItems] = useState<BudgetItemResponse[]>(budget.items);
+
+  useEffect(() => {
+    setItems(budget.items);
+  }, [budget.id]);
+
+  const handleToggleSnooze = async (itemId: number) => {
+    const target = items.find(item => item.id === itemId);
+    if (!target) return;
+
+    const newSnoozed = !target.snoozed;
+
+    // Optimistic update
+    setItems(prev => setSnoozed(prev, itemId, newSnoozed));
+
+    try {
+      await updateBudgetItem(year, month, itemId, { snoozed: newSnoozed });
+    } catch (err) {
+      // Revert on error
+      setItems(prev => setSnoozed(prev, itemId, !newSnoozed));
+      console.error('Failed to toggle snooze:', err);
+    }
+  };
+
+  const sorted = [...items]
     .filter(item => item.categoryType === 'EXPENSE')
     .sort((a, b) => {
       if (a.snoozed !== b.snoozed) return a.snoozed ? 1 : -1;
@@ -56,7 +86,15 @@ export function BudgetList({ budget, year, month, onPrev, onNext }: BudgetListPr
         {sorted.length === 0 ? (
           <div className="budget-list-empty">No budget items for this period.</div>
         ) : (
-          sorted.map(item => <BudgetCategoryRow key={item.id} item={item} year={year} month={month} />)
+          sorted.map(item => (
+            <BudgetCategoryRow
+              key={item.id}
+              item={item}
+              year={year}
+              month={month}
+              onToggleSnooze={handleToggleSnooze}
+            />
+          ))
         )}
       </div>
     </div>
