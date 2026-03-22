@@ -27,7 +27,14 @@ fun Application.configureTransactionRoutes(service: TransactionService) {
             val year = call.parameters["year"]?.toIntOrNull()
             val month = call.parameters["month"]?.toIntOrNull()
             val budgetItemId = call.parameters["budgetItemId"]?.toIntOrNull()
-            val transactions = service.getAll(categoryId, year, month, budgetItemId).map { TransactionResponse.from(it) }
+            val transactions =
+                service
+                    .getAll(
+                        categoryId,
+                        year,
+                        month,
+                        budgetItemId,
+                    ).map { TransactionResponse.from(it) }
             call.respond(HttpStatusCode.OK, transactions)
         }
 
