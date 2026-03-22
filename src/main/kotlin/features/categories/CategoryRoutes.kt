@@ -12,6 +12,12 @@ import io.ktor.server.routing.routing
 
 fun Application.configureCategoryRoutes(service: CategoryService) {
     routing {
+        post("/categories/batch") {
+            val requests = call.receive<List<CategoryRequest>>()
+            val ids = service.createBatch(requests.map { it.toNewCategory() })
+            call.respond(HttpStatusCode.Created, ids)
+        }
+
         post("/categories") {
             val request = call.receive<CategoryRequest>()
             val id = service.create(request.toNewCategory())

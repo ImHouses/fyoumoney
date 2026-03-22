@@ -95,6 +95,29 @@ class CategoryRoutesTest {
     }
 
     @Test
+    fun `POST categories batch creates multiple and returns 201 with ids`() = withApp {
+        val response = client.post("/categories/batch") {
+            contentType(ContentType.Application.Json)
+            setBody("""[
+                {"name":"Salary","type":"INCOME","defaultAllocation":"5000.00"},
+                {"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"},
+                {"name":"Rent","type":"EXPENSE","defaultAllocation":"1200.00"}
+            ]""")
+        }
+        assertEquals(HttpStatusCode.Created, response.status)
+        val body = response.bodyAsText()
+        // Response is a JSON array of 3 IDs
+        assertContains(body, ",")
+
+        // Verify all 3 categories exist
+        val getResponse = client.get("/categories")
+        val getBody = getResponse.bodyAsText()
+        assertContains(getBody, "Salary")
+        assertContains(getBody, "Food")
+        assertContains(getBody, "Rent")
+    }
+
+    @Test
     fun `DELETE categories soft-deletes and returns 200`() = withApp {
         val created = client.post("/categories") {
             contentType(ContentType.Application.Json)

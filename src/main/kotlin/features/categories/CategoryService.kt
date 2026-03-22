@@ -11,4 +11,6 @@ class CategoryService(private val repository: CategoryRepository) {
     suspend fun update(id: Int, category: NewCategory) = repository.update(id, category)
 
     suspend fun delete(id: Int) = repository.softDelete(id)
+
+    suspend fun createBatch(categories: List<NewCategory>): List<Int> = repository.createBatch(categories)
 }
