@@ -13,10 +13,12 @@ interface BudgetListProps {
 }
 
 export function BudgetList({ budget, year, month, onPrev, onNext }: BudgetListProps) {
-  const sorted = [...budget.items].sort((a, b) => {
-    if (a.snoozed !== b.snoozed) return a.snoozed ? 1 : -1;
-    return a.categoryName.localeCompare(b.categoryName);
-  });
+  const sorted = [...budget.items]
+    .filter(item => item.categoryType === 'EXPENSE')
+    .sort((a, b) => {
+      if (a.snoozed !== b.snoozed) return a.snoozed ? 1 : -1;
+      return a.categoryName.localeCompare(b.categoryName);
+    });
 
   return (
     <div>

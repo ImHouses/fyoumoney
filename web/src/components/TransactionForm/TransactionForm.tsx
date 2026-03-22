@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getCategories, createTransaction } from '../../api/budgetApi';
-import type { CategoryResponse } from '../../types/budget';
+import type { CategoryResponse, TransactionType } from '../../types/budget';
 import { formatAmountDisplay, toRawAmount } from '../../utils/format';
 import './TransactionForm.css';
 
@@ -9,7 +9,8 @@ export function TransactionForm() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [categories, setCategories] = useState<CategoryResponse[]>([]);
+  const [allCategories, setAllCategories] = useState<CategoryResponse[]>([]);
+  const [transactionType, setTransactionType] = useState<TransactionType>('EXPENSE');
   const [displayAmount, setDisplayAmount] = useState('');
   const [rawAmount, setRawAmount] = useState('');
   const [categoryId, setCategoryId] = useState('');
@@ -19,13 +20,21 @@ export function TransactionForm() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getCategories().then(setCategories).catch(() => {});
+    getCategories().then(setAllCategories).catch(() => {});
   }, []);
 
   useEffect(() => {
     const catParam = searchParams.get('categoryId');
     if (catParam) setCategoryId(catParam);
   }, [searchParams]);
+
+  const filteredCategories = allCategories.filter(c => c.type === transactionType);
+
+  // Reset category selection when switching type
+  const handleTypeChange = (type: TransactionType) => {
+    setTransactionType(type);
+    setCategoryId('');
+  };
 
   const handleAmountChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
@@ -63,6 +72,27 @@ export function TransactionForm() {
         <h1 className="transaction-form-title">New Transaction</h1>
       </div>
 
+      <div className="segmented-btn" role="radiogroup" aria-label="Transaction type">
+        <button
+          role="radio"
+          aria-checked={transactionType === 'EXPENSE'}
+          className={`segmented-btn-item${transactionType === 'EXPENSE' ? ' selected' : ''}`}
+          onClick={() => handleTypeChange('EXPENSE')}
+          type="button"
+        >
+          Expense
+        </button>
+        <button
+          role="radio"
+          aria-checked={transactionType === 'INCOME'}
+          className={`segmented-btn-item${transactionType === 'INCOME' ? ' selected' : ''}`}
+          onClick={() => handleTypeChange('INCOME')}
+          type="button"
+        >
+          Income
+        </button>
+      </div>
+
       <form className="transaction-form" onSubmit={handleSubmit}>
         <div className="transaction-form-field">
           <label className="transaction-form-label" htmlFor="amount">Amount</label>
@@ -88,7 +118,7 @@ export function TransactionForm() {
             required
           >
             <option value="">Select a category</option>
-            {categories.map(cat => (
+            {filteredCategories.map(cat => (
               <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
@@ -103,7 +133,6 @@ export function TransactionForm() {
             placeholder="What was this for?"
             value={description}
             onChange={e => setDescription(e.target.value)}
-            required
           />
         </div>
 

@@ -47,7 +47,7 @@ export interface BudgetItemUpdateRequest {
 export interface TransactionRequest {
   amount: string;
   categoryId: number;
-  description: string;
+  description?: string;
   date: string;
 }
 

@@ -25,10 +25,9 @@ export function getProgressColor(
   const alloc = parseDecimal(allocation);
   const sp = parseDecimal(spent);
   if (alloc === 0) return 'gray';
-  const ratio = sp / alloc;
-  if (ratio >= 1) return 'gray';
-  if (ratio >= 0.8) return 'red';
-  if (ratio >= 0.5) return 'yellow';
+  const remaining = Math.max(1 - sp / alloc, 0) * 100;
+  if (remaining <= 30) return 'red';
+  if (remaining <= 60) return 'yellow';
   return 'green';
 }
 
@@ -36,7 +35,7 @@ export function getProgressWidth(allocation: string, spent: string): number {
   const alloc = parseDecimal(allocation);
   const sp = parseDecimal(spent);
   if (alloc === 0) return 0;
-  return Math.min((sp / alloc) * 100, 100);
+  return Math.max(100 - (sp / alloc) * 100, 0);
 }
 
 const emojiMap: Record<string, string> = {

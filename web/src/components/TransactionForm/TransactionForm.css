@@ -35,6 +35,40 @@
   font-weight: 700;
 }
 
+.segmented-btn {
+  display: flex;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.segmented-btn-item {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.segmented-btn-item + .segmented-btn-item {
+  border-left: 1px solid var(--color-border);
+}
+
+.segmented-btn-item:hover:not(.selected) {
+  background-color: var(--color-bg-card-hover);
+}
+
+.segmented-btn-item.selected {
+  background-color: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-text);
+}
+
 .transaction-form {
   display: flex;
   flex-direction: column;

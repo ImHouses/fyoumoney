@@ -17,19 +17,31 @@ class BudgetService(
         val budget = repository.findBudgetByYearMonth(year, month)
             ?: autoCreateBudget(year, month)
 
-        val items = repository.findBudgetItemsByBudgetId(budget.id)
+        var items = repository.findBudgetItemsByBudgetId(budget.id)
+
+        // Add budget items for any active categories missing from this budget
+        val existingCategoryIds = items.map { it.categoryId }.toSet()
+        val activeCategories = categoryService.getAllActive()
+        val missing = activeCategories.filter { it.id !in existingCategoryIds }
+        if (missing.isNotEmpty()) {
+            val newItems = missing.map { cat ->
+                repository.createBudgetItem(budget.id, cat.id, cat.defaultAllocationCents)
+            }
+            items = items + newItems
+        }
+
         val spentByItem = getSpentByBudgetItems(items.map { it.id })
 
-        var totalExpenseCents = 0L
-        var totalIncomeCents = 0L
+        var totalExpenseSpentCents = 0L
+        var totalIncomeAllocationCents = 0L
 
         val itemResponses = items.map { item ->
             val category = categoryService.getById(item.categoryId)!!
             val itemSpentCents = spentByItem[item.id] ?: 0L
 
             when (category.type) {
-                TransactionType.EXPENSE -> totalExpenseCents += itemSpentCents
-                TransactionType.INCOME -> totalIncomeCents += itemSpentCents
+                TransactionType.EXPENSE -> totalExpenseSpentCents += itemSpentCents
+                TransactionType.INCOME -> totalIncomeAllocationCents += item.allocationCents
             }
 
             BudgetItemResponse(
@@ -43,13 +55,13 @@ class BudgetService(
             )
         }
 
-        val remainingCents = totalExpenseCents - totalIncomeCents
+        val remainingCents = totalIncomeAllocationCents - totalExpenseSpentCents
 
         return BudgetResponse(
             id = budget.id,
             year = budget.year,
             month = budget.month,
-            spent = BigDecimal(totalExpenseCents).movePointLeft(2).toPlainString(),
+            spent = BigDecimal(totalExpenseSpentCents).movePointLeft(2).toPlainString(),
             remaining = BigDecimal(remainingCents).movePointLeft(2).toPlainString(),
             items = itemResponses,
         )
@@ -66,6 +78,11 @@ class BudgetService(
             ?: autoCreateBudget(year, month)
 
         return repository.findBudgetItemByBudgetAndCategory(budget.id, categoryId)
+            ?: run {
+                val category = categoryService.getById(categoryId) ?: return null
+                if (!category.active) return null
+                repository.createBudgetItem(budget.id, categoryId, category.defaultAllocationCents)
+            }
     }
 
     suspend fun updateBudgetItem(itemId: Int, allocationCents: Long?, snoozed: Boolean?) {

@@ -26,7 +26,7 @@ data class NewTransaction(
 data class TransactionRequest(
     val amount: String,
     val categoryId: Int,
-    val description: String,
+    val description: String = "",
     val date: String,
 ) {
     fun toNewTransaction() = NewTransaction(

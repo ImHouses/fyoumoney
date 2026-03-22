@@ -9,7 +9,7 @@ object Transactions : Table() {
     val id = integer("id").autoIncrement()
     val amountCents = long("amount_cents")
     val type = enumerationByName<TransactionType>("type", 50)
-    val description = varchar("description", 255)
+    val description = varchar("description", 255).default("")
     val date = date("date")
     val budgetItemId = integer("budget_item_id").references(BudgetItems.id)
 
