@@ -23,6 +23,20 @@ Here's a list of features included in this project:
 | [Postgres](https://start.ktor.io/p/postgres)                           | Adds Postgres database to your application                                         |
 | [Koin](https://start.ktor.io/p/koin)                                   | Provides dependency injection                                                      |
 
+## Setup
+
+Install [ktlint](https://pinterest.github.io/ktlint/) for Kotlin linting:
+
+```bash
+brew install ktlint
+```
+
+Then configure git to use the project's pre-commit hook:
+
+```bash
+git config core.hooksPath .githooks
+```
+
 ## Building & Running
 
 To build or run the project, use one of the following tasks:
