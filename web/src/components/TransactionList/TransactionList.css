@@ -36,6 +36,26 @@
   font-weight: 700;
 }
 
+.transaction-list-home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.transaction-list-home:hover {
+  background-color: var(--color-bg-card-hover);
+}
+
 .transaction-list-state {
   padding: 24px 0;
   text-align: center;
@@ -145,4 +165,20 @@
 
 .transaction-row-delete.confirming:hover {
   background-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .transaction-row {
+    flex-wrap: wrap;
+  }
+
+  .transaction-row-main {
+    flex-basis: 100%;
+  }
+
+  .transaction-row-right {
+    flex-basis: 100%;
+    justify-content: flex-start;
+    margin-top: 4px;
+  }
 }
