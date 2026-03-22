@@ -77,6 +77,7 @@ The OpenAPI spec is defined in `src/main/resources/openapi/documentation.yaml`. 
 
 - **List pages** (TransactionList, EditPlan, SetupPage): `max-width: 600px`. Each list item is a separate card (`background-color: var(--color-bg-card)`, `border-radius: var(--radius-md)`) with `gap: 6px` between them. Do not group items in a single bordered container with dividers.
 - **Form pages** (TransactionForm): `max-width: 480px`.
+- **Inline action buttons** (Edit, Save, Cancel, Delete): `padding: 6px 14px`, `border: 1px solid var(--color-border)`, `border-radius: var(--radius-sm)`, `font-size: 13px`, `font-weight: 500`, `color: var(--color-text-primary)`. Reference: `edit-plan-item-btn` in EditPlan.css.
 
 ## Package
 

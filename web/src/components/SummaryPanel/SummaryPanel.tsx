@@ -12,7 +12,7 @@ export function SummaryPanel({ budget }: SummaryPanelProps) {
     .reduce((sum, item) => sum + parseDecimal(item.allocation), 0);
 
   const overBudgetCount = budget.items.filter(
-    item => !item.snoozed && parseDecimal(item.spent) > parseDecimal(item.allocation),
+    item => !item.snoozed && item.categoryType === 'EXPENSE' && parseDecimal(item.spent) > parseDecimal(item.allocation),
   ).length;
 
   return (

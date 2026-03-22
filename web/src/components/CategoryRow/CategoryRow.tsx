@@ -34,12 +34,15 @@ export function CategoryRow({ category, onSave, onDelete, onCancel }: CategoryRo
     setRawAllocation(toRawAmount(input));
   }, []);
 
+  const isIncome = category.type === 'INCOME';
+
   const handleSave = () => {
-    if (!name.trim() || !rawAllocation) return;
+    if (!name.trim()) return;
+    if (!isIncome && !rawAllocation) return;
     onSave({
       ...category,
       name: name.trim(),
-      defaultAllocation: rawAllocation,
+      defaultAllocation: isIncome ? '0' : rawAllocation,
       editing: false,
       isNew: false,
     });
@@ -60,13 +63,15 @@ export function CategoryRow({ category, onSave, onDelete, onCancel }: CategoryRo
             onChange={e => setName(e.target.value)}
             autoFocus
           />
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder="$0.00"
-            value={displayAllocation}
-            onChange={handleAllocationChange}
-          />
+          {!isIncome && (
+            <input
+              type="text"
+              inputMode="numeric"
+              placeholder="$0.00"
+              value={displayAllocation}
+              onChange={handleAllocationChange}
+            />
+          )}
         </div>
         <div className="category-row-edit-actions">
           <button type="button" className="category-row-edit-btn cancel" onClick={handleCancel}>Cancel</button>
@@ -80,7 +85,7 @@ export function CategoryRow({ category, onSave, onDelete, onCancel }: CategoryRo
     <div className="category-row">
       <span className="category-row-emoji">{getCategoryEmoji(category.name)}</span>
       <span className="category-row-name">{category.name}</span>
-      <span className="category-row-allocation">{formatCurrency(category.defaultAllocation)}</span>
+      {!isIncome && <span className="category-row-allocation">{formatCurrency(category.defaultAllocation)}</span>}
       <div className="category-row-actions">
         <button
           className="category-row-btn"

@@ -16,6 +16,7 @@ interface BudgetCategoryRowProps {
 }
 
 export function BudgetCategoryRow({ item, year, month }: BudgetCategoryRowProps) {
+  const isIncome = item.categoryType === 'INCOME';
   const remaining = parseDecimal(item.allocation) - parseDecimal(item.spent);
   const isOverBudget = remaining < 0;
   const progressColor = getProgressColor(item.allocation, item.spent);
@@ -24,32 +25,43 @@ export function BudgetCategoryRow({ item, year, month }: BudgetCategoryRowProps)
   return (
     <Link
       to={`/budgets/${year}/${month}/items/${item.id}/transactions`}
-      className={`budget-row${item.snoozed ? ' snoozed' : ''}`}
+      className={`budget-row${item.snoozed ? ' snoozed' : ''}${isIncome ? ' income' : ''}`}
     >
       <div className="budget-row-name">
         <span className="budget-row-emoji">{getCategoryEmoji(item.categoryName)}</span>
         <span className="budget-row-category-name">{item.categoryName}</span>
       </div>
 
-      <span className="budget-row-amount">{formatCurrency(item.allocation)}</span>
-      <span className="budget-row-amount">{formatCurrency(item.spent)}</span>
-
-      <span className={`budget-row-remaining-pill ${isOverBudget ? 'over-budget' : progressColor}`}>
-        {isOverBudget ? `-${formatCurrency(String(Math.abs(remaining)))}` : formatCurrency(String(remaining))}
-      </span>
+      {isIncome ? (
+        <>
+          <span className="budget-row-amount">{formatCurrency(item.spent)}</span>
+          <span />
+          <span />
+        </>
+      ) : (
+        <>
+          <span className="budget-row-amount">{formatCurrency(item.allocation)}</span>
+          <span className="budget-row-amount">{formatCurrency(item.spent)}</span>
+          <span className={`budget-row-remaining-pill ${isOverBudget ? 'over-budget' : progressColor}`}>
+            {isOverBudget ? `-${formatCurrency(String(Math.abs(remaining)))}` : formatCurrency(String(remaining))}
+          </span>
+        </>
+      )}
 
       {/* Mobile compact view */}
       <div className="budget-row-mobile-right">
-        <div>{formatCurrency(item.allocation)} assigned</div>
-        <div>{formatCurrency(item.spent)} spent</div>
+        {!isIncome && <div>{formatCurrency(item.allocation)} assigned</div>}
+        <div>{formatCurrency(item.spent)} {isIncome ? 'received' : 'spent'}</div>
       </div>
 
-      <div className="budget-row-progress">
-        <div
-          className={`budget-row-progress-fill ${progressColor}`}
-          style={{ width: `${progressWidth}%` }}
-        />
-      </div>
+      {!isIncome && (
+        <div className="budget-row-progress">
+          <div
+            className={`budget-row-progress-fill ${progressColor}`}
+            style={{ width: `${progressWidth}%` }}
+          />
+        </div>
+      )}
     </Link>
   );
 }

@@ -26,13 +26,9 @@ export function SetupPage() {
   const incomeCategories = categories.filter(c => c.type === 'INCOME');
   const expenseCategories = categories.filter(c => c.type === 'EXPENSE');
 
-  const totalIncome = incomeCategories
-    .filter(c => !c.editing)
-    .reduce((sum, c) => sum + parseDecimal(c.defaultAllocation), 0);
   const totalExpenses = expenseCategories
     .filter(c => !c.editing)
     .reduce((sum, c) => sum + parseDecimal(c.defaultAllocation), 0);
-  const remaining = totalIncome - totalExpenses;
 
   const addCategory = (type: 'INCOME' | 'EXPENSE') => {
     setCategories(prev => [
@@ -136,19 +132,11 @@ export function SetupPage() {
         </button>
       </div>
 
-      {(hasIncome || hasExpense) && (
+      {hasExpense && (
         <div className="setup-summary">
-          <div className="setup-summary-row">
-            <span className="setup-summary-label">Monthly income</span>
-            <span className="setup-summary-value">{formatCurrency(String(totalIncome))}</span>
-          </div>
           <div className="setup-summary-row">
             <span className="setup-summary-label">Monthly expenses</span>
             <span className="setup-summary-value">{formatCurrency(String(totalExpenses))}</span>
-          </div>
-          <div className="setup-summary-row">
-            <span className="setup-summary-label">Remaining</span>
-            <span className="setup-summary-value remaining">{formatCurrency(String(remaining))}</span>
           </div>
         </div>
       )}
