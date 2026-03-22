@@ -1,6 +1,6 @@
 .budget-row {
   display: grid;
-  grid-template-columns: 1fr 120px 120px 100px;
+  grid-template-columns: 1fr 120px 120px 100px 40px;
   align-items: center;
   padding: 14px 16px;
   background-color: var(--color-bg-card);
@@ -105,6 +105,25 @@
 }
 .budget-row-progress-fill.gray {
   background-color: var(--color-progress-gray);
+}
+
+.budget-row-snooze-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  text-decoration: none;
+}
+
+.budget-row-snooze-btn:hover {
+  background-color: var(--color-bg-card-hover);
 }
 
 /* Mobile */
