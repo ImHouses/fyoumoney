@@ -1,12 +1,12 @@
 package dev.jcasas.features.budgets
 
 import kotlinx.coroutines.Dispatchers
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.update
 
 class BudgetRepository {
@@ -18,7 +18,8 @@ class BudgetRepository {
             Budgets
                 .selectAll()
                 .where { (Budgets.year eq year) and (Budgets.month eq month) }
-                .map(ResultRow::toBudget).singleOrNull()
+                .map(ResultRow::toBudget)
+                .singleOrNull()
         }
 
     suspend fun findAllBudgets(year: Int?): List<Budget> =
@@ -58,7 +59,8 @@ class BudgetRepository {
             BudgetItems
                 .selectAll()
                 .where { BudgetItems.id eq id }
-                .map(ResultRow::toBudgetItem).singleOrNull()
+                .map(ResultRow::toBudgetItem)
+                .singleOrNull()
         }
 
     suspend fun findBudgetItemByBudgetAndCategory(
@@ -69,7 +71,8 @@ class BudgetRepository {
             BudgetItems
                 .selectAll()
                 .where { (BudgetItems.budgetId eq budgetId) and (BudgetItems.categoryId eq categoryId) }
-                .map(ResultRow::toBudgetItem).singleOrNull()
+                .map(ResultRow::toBudgetItem)
+                .singleOrNull()
         }
 
     suspend fun findBudgetItemsByBudgetId(budgetId: Int): List<BudgetItem> =
@@ -114,16 +117,18 @@ class BudgetRepository {
     }
 }
 
-private fun ResultRow.toBudget() = Budget(
-    id = this[Budgets.id],
-    year = this[Budgets.year],
-    month = this[Budgets.month],
-)
+private fun ResultRow.toBudget() =
+    Budget(
+        id = this[Budgets.id],
+        year = this[Budgets.year],
+        month = this[Budgets.month],
+    )
 
-private fun ResultRow.toBudgetItem() = BudgetItem(
-    id = this[BudgetItems.id],
-    budgetId = this[BudgetItems.budgetId],
-    categoryId = this[BudgetItems.categoryId],
-    allocationCents = this[BudgetItems.allocationCents],
-    snoozed = this[BudgetItems.snoozed],
-)
+private fun ResultRow.toBudgetItem() =
+    BudgetItem(
+        id = this[BudgetItems.id],
+        budgetId = this[BudgetItems.budgetId],
+        categoryId = this[BudgetItems.categoryId],
+        allocationCents = this[BudgetItems.allocationCents],
+        snoozed = this[BudgetItems.snoozed],
+    )

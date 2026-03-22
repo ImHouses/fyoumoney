@@ -1,12 +1,12 @@
 package dev.jcasas.features.categories
 
 import kotlinx.coroutines.Dispatchers
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.update
 
 class CategoryRepository {
@@ -24,7 +24,8 @@ class CategoryRepository {
             Categories
                 .selectAll()
                 .where { Categories.id eq id }
-                .map(ResultRow::toCategory).singleOrNull()
+                .map(ResultRow::toCategory)
+                .singleOrNull()
         }
 
     suspend fun findAllActive(): List<Category> =
@@ -64,10 +65,11 @@ class CategoryRepository {
         }
 }
 
-private fun ResultRow.toCategory() = Category(
-    id = this[Categories.id],
-    name = this[Categories.name],
-    type = this[Categories.type],
-    defaultAllocationCents = this[Categories.defaultAllocationCents],
-    active = this[Categories.active],
-)
+private fun ResultRow.toCategory() =
+    Category(
+        id = this[Categories.id],
+        name = this[Categories.name],
+        type = this[Categories.type],
+        defaultAllocationCents = this[Categories.defaultAllocationCents],
+        active = this[Categories.active],
+    )

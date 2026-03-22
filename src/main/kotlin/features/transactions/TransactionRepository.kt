@@ -5,6 +5,7 @@ import dev.jcasas.features.budgets.BudgetItems
 import dev.jcasas.features.budgets.Budgets
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.JoinType
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.deleteWhere
@@ -12,7 +13,6 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.sum
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.update
 import java.math.BigDecimal
 
@@ -38,7 +38,8 @@ class TransactionRepository {
                 .join(BudgetItems, JoinType.INNER, Transactions.budgetItemId, BudgetItems.id)
                 .selectAll()
                 .where { Transactions.id eq id }
-                .map(ResultRow::toTransaction).singleOrNull()
+                .map(ResultRow::toTransaction)
+                .singleOrNull()
         }
 
     suspend fun findAll(
@@ -105,12 +106,13 @@ class TransactionRepository {
     }
 }
 
-private fun ResultRow.toTransaction() = Transaction(
-    id = this[Transactions.id],
-    amount = BigDecimal(this[Transactions.amountCents]).movePointLeft(2),
-    type = this[Transactions.type],
-    description = this[Transactions.description],
-    date = this[Transactions.date],
-    budgetItemId = this[Transactions.budgetItemId],
-    categoryId = this[BudgetItems.categoryId],
-)
+private fun ResultRow.toTransaction() =
+    Transaction(
+        id = this[Transactions.id],
+        amount = BigDecimal(this[Transactions.amountCents]).movePointLeft(2),
+        type = this[Transactions.type],
+        description = this[Transactions.description],
+        date = this[Transactions.date],
+        budgetItemId = this[Transactions.budgetItemId],
+        categoryId = this[BudgetItems.categoryId],
+    )
