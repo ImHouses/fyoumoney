@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { TransactionType } from '../../types/budget';
-import { formatCurrency, getCategoryEmoji, formatAmountDisplay, toRawAmount } from '../../utils/format';
+import { formatCurrency, getCategoryEmoji, formatAmountDisplay, toRawAmount, parseDecimal } from '../../utils/format';
 import './CategoryRow.css';
 
 export interface LocalCategory {
@@ -22,7 +22,9 @@ interface CategoryRowProps {
 export function CategoryRow({ category, onSave, onDelete, onCancel }: CategoryRowProps) {
   const [name, setName] = useState(category.name);
   const [displayAllocation, setDisplayAllocation] = useState(
-    category.defaultAllocation ? formatAmountDisplay(category.defaultAllocation.replace('.', '')) : '',
+    category.defaultAllocation
+      ? formatAmountDisplay(String(Math.round(parseDecimal(category.defaultAllocation) * 100)))
+      : '',
   );
   const [rawAllocation, setRawAllocation] = useState(category.defaultAllocation);
 
@@ -49,7 +51,7 @@ export function CategoryRow({ category, onSave, onDelete, onCancel }: CategoryRo
 
   if (category.editing) {
     return (
-      <div className="category-row-edit">
+      <form className="category-row-edit" onSubmit={e => { e.preventDefault(); handleSave(); }}>
         <div className="category-row-edit-fields">
           <input
             type="text"
@@ -67,10 +69,10 @@ export function CategoryRow({ category, onSave, onDelete, onCancel }: CategoryRo
           />
         </div>
         <div className="category-row-edit-actions">
-          <button className="category-row-edit-btn cancel" onClick={handleCancel}>Cancel</button>
-          <button className="category-row-edit-btn save" onClick={handleSave}>Save</button>
+          <button type="button" className="category-row-edit-btn cancel" onClick={handleCancel}>Cancel</button>
+          <button type="submit" className="category-row-edit-btn save">Save</button>
         </div>
-      </div>
+      </form>
     );
   }
 

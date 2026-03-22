@@ -105,7 +105,7 @@ export function SetupPage() {
         <div className="setup-section-items">
           {incomeCategories.map(cat => (
             <CategoryRow
-              key={cat.tempId}
+              key={`${cat.tempId}-${cat.editing}`}
               category={cat}
               onSave={handleSave}
               onDelete={handleDelete}
@@ -123,7 +123,7 @@ export function SetupPage() {
         <div className="setup-section-items">
           {expenseCategories.map(cat => (
             <CategoryRow
-              key={cat.tempId}
+              key={`${cat.tempId}-${cat.editing}`}
               category={cat}
               onSave={handleSave}
               onDelete={handleDelete}
