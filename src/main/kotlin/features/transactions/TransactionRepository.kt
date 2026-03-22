@@ -10,7 +10,9 @@ import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.sum
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.update
 import java.math.BigDecimal
 
@@ -36,17 +38,7 @@ class TransactionRepository {
                 .join(BudgetItems, JoinType.INNER, Transactions.budgetItemId, BudgetItems.id)
                 .selectAll()
                 .where { Transactions.id eq id }
-                .map { row ->
-                    Transaction(
-                        id = row[Transactions.id],
-                        amount = BigDecimal(row[Transactions.amountCents]).movePointLeft(2),
-                        type = row[Transactions.type],
-                        description = row[Transactions.description],
-                        date = row[Transactions.date],
-                        budgetItemId = row[Transactions.budgetItemId],
-                        categoryId = row[BudgetItems.categoryId],
-                    )
-                }.singleOrNull()
+                .map(ResultRow::toTransaction).singleOrNull()
         }
 
     suspend fun findAll(
@@ -75,17 +67,7 @@ class TransactionRepository {
                 query.andWhere { Transactions.budgetItemId eq budgetItemId }
             }
 
-            query.map { row ->
-                Transaction(
-                    id = row[Transactions.id],
-                    amount = BigDecimal(row[Transactions.amountCents]).movePointLeft(2),
-                    type = row[Transactions.type],
-                    description = row[Transactions.description],
-                    date = row[Transactions.date],
-                    budgetItemId = row[Transactions.budgetItemId],
-                    categoryId = row[BudgetItems.categoryId],
-                )
-            }
+            query.map(ResultRow::toTransaction)
         }
 
     suspend fun update(
@@ -107,4 +89,28 @@ class TransactionRepository {
         newSuspendedTransaction(Dispatchers.IO) {
             Transactions.deleteWhere { Transactions.id eq id }
         }
+
+    suspend fun getSpentByBudgetItems(itemIds: List<Int>): Map<Int, Long> {
+        if (itemIds.isEmpty()) return emptyMap()
+        return newSuspendedTransaction(Dispatchers.IO) {
+            val sumCol = Transactions.amountCents.sum()
+            Transactions
+                .select(Transactions.budgetItemId, sumCol)
+                .where { Transactions.budgetItemId inList itemIds }
+                .groupBy(Transactions.budgetItemId)
+                .associate { row ->
+                    row[Transactions.budgetItemId] to (row[sumCol] ?: 0L)
+                }
+        }
+    }
 }
+
+private fun ResultRow.toTransaction() = Transaction(
+    id = this[Transactions.id],
+    amount = BigDecimal(this[Transactions.amountCents]).movePointLeft(2),
+    type = this[Transactions.type],
+    description = this[Transactions.description],
+    date = this[Transactions.date],
+    budgetItemId = this[Transactions.budgetItemId],
+    categoryId = this[BudgetItems.categoryId],
+)

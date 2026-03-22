@@ -5,6 +5,7 @@ import dev.jcasas.features.categories.Categories
 import dev.jcasas.features.categories.CategoryRepository
 import dev.jcasas.features.categories.CategoryService
 import dev.jcasas.features.categories.configureCategoryRoutes
+import dev.jcasas.features.transactions.TransactionRepository
 import dev.jcasas.features.transactions.Transactions
 import io.ktor.client.request.get
 import io.ktor.client.request.post
@@ -39,7 +40,7 @@ class BudgetRoutesTest {
     private fun withApp(block: suspend ApplicationTestBuilder.() -> Unit) =
         testApplication {
             val categoryService = CategoryService(CategoryRepository())
-            val budgetService = BudgetService(BudgetRepository(), categoryService)
+            val budgetService = BudgetService(BudgetRepository(), categoryService, TransactionRepository())
             application {
                 configureSerialization()
                 configureCategoryRoutes(categoryService)

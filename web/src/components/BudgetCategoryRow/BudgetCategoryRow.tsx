@@ -57,7 +57,7 @@ export function BudgetCategoryRow({ item, year, month, onToggleSnooze }: BudgetC
 
       {!isIncome && (
         <button
-          className="budget-row-snooze-btn"
+          className="action-btn budget-row-snooze-btn"
           onClick={e => {
             e.preventDefault();
             e.stopPropagation();

@@ -57,14 +57,14 @@ export function TransactionRow({ transaction, onEdit, onDelete }: TransactionRow
         <span className="transaction-row-amount">{formatCurrency(transaction.amount)}</span>
         <div className="transaction-row-actions">
           <button
-            className="transaction-row-btn transaction-row-edit"
+            className="action-btn transaction-row-edit"
             onClick={() => onEdit(transaction.id)}
             type="button"
           >
             Edit
           </button>
           <button
-            className={`transaction-row-btn transaction-row-delete${confirming ? ' confirming' : ''}`}
+            className={`action-btn transaction-row-delete${confirming ? ' confirming' : ''}`}
             onClick={handleDeleteClick}
             onBlur={handleDeleteBlur}
             type="button"

@@ -5,6 +5,7 @@ import dev.jcasas.features.categories.Categories
 import dev.jcasas.features.categories.CategoryRepository
 import dev.jcasas.features.categories.CategoryService
 import dev.jcasas.features.categories.NewCategory
+import dev.jcasas.features.transactions.TransactionRepository
 import dev.jcasas.features.transactions.Transactions
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.Database
@@ -30,7 +31,7 @@ class BudgetServiceTest {
             SchemaUtils.create(Categories, Budgets, BudgetItems, Transactions)
         }
         categoryService = CategoryService(CategoryRepository())
-        budgetService = BudgetService(BudgetRepository(), categoryService)
+        budgetService = BudgetService(BudgetRepository(), categoryService, TransactionRepository())
     }
 
     @Test

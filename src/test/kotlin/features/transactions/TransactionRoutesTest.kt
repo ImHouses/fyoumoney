@@ -43,7 +43,7 @@ class TransactionRoutesTest {
     private fun withApp(block: suspend ApplicationTestBuilder.() -> Unit) =
         testApplication {
             val categoryService = CategoryService(CategoryRepository())
-            val budgetService = BudgetService(BudgetRepository(), categoryService)
+            val budgetService = BudgetService(BudgetRepository(), categoryService, TransactionRepository())
             val transactionService = TransactionService(TransactionRepository(), budgetService, categoryService)
             application {
                 configureSerialization()

@@ -16,7 +16,7 @@ function BudgetPage() {
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1);
-  const { budget, loading, error } = useBudget(year, month);
+  const { budget, loading, error, refetch } = useBudget(year, month);
 
   const prevMonth = () => {
     if (month === 1) {
@@ -64,6 +64,7 @@ function BudgetPage() {
           month={month}
           onPrev={prevMonth}
           onNext={nextMonth}
+          onRefresh={refetch}
         />
       )}
     </Layout>

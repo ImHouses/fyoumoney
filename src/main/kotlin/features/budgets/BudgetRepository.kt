@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.update
 
 class BudgetRepository {
@@ -17,13 +18,7 @@ class BudgetRepository {
             Budgets
                 .selectAll()
                 .where { (Budgets.year eq year) and (Budgets.month eq month) }
-                .map { row ->
-                    Budget(
-                        id = row[Budgets.id],
-                        year = row[Budgets.year],
-                        month = row[Budgets.month],
-                    )
-                }.singleOrNull()
+                .map(ResultRow::toBudget).singleOrNull()
         }
 
     suspend fun findAllBudgets(year: Int?): List<Budget> =
@@ -32,13 +27,7 @@ class BudgetRepository {
             if (year != null) {
                 query.where { Budgets.year eq year }
             }
-            query.map { row ->
-                Budget(
-                    id = row[Budgets.id],
-                    year = row[Budgets.year],
-                    month = row[Budgets.month],
-                )
-            }
+            query.map(ResultRow::toBudget)
         }
 
     suspend fun createBudgetWithItems(
@@ -69,15 +58,7 @@ class BudgetRepository {
             BudgetItems
                 .selectAll()
                 .where { BudgetItems.id eq id }
-                .map { row ->
-                    BudgetItem(
-                        id = row[BudgetItems.id],
-                        budgetId = row[BudgetItems.budgetId],
-                        categoryId = row[BudgetItems.categoryId],
-                        allocationCents = row[BudgetItems.allocationCents],
-                        snoozed = row[BudgetItems.snoozed],
-                    )
-                }.singleOrNull()
+                .map(ResultRow::toBudgetItem).singleOrNull()
         }
 
     suspend fun findBudgetItemByBudgetAndCategory(
@@ -88,15 +69,7 @@ class BudgetRepository {
             BudgetItems
                 .selectAll()
                 .where { (BudgetItems.budgetId eq budgetId) and (BudgetItems.categoryId eq categoryId) }
-                .map { row ->
-                    BudgetItem(
-                        id = row[BudgetItems.id],
-                        budgetId = row[BudgetItems.budgetId],
-                        categoryId = row[BudgetItems.categoryId],
-                        allocationCents = row[BudgetItems.allocationCents],
-                        snoozed = row[BudgetItems.snoozed],
-                    )
-                }.singleOrNull()
+                .map(ResultRow::toBudgetItem).singleOrNull()
         }
 
     suspend fun findBudgetItemsByBudgetId(budgetId: Int): List<BudgetItem> =
@@ -104,15 +77,7 @@ class BudgetRepository {
             BudgetItems
                 .selectAll()
                 .where { BudgetItems.budgetId eq budgetId }
-                .map { row ->
-                    BudgetItem(
-                        id = row[BudgetItems.id],
-                        budgetId = row[BudgetItems.budgetId],
-                        categoryId = row[BudgetItems.categoryId],
-                        allocationCents = row[BudgetItems.allocationCents],
-                        snoozed = row[BudgetItems.snoozed],
-                    )
-                }
+                .map(ResultRow::toBudgetItem)
         }
 
     suspend fun createBudgetItem(
@@ -148,3 +113,17 @@ class BudgetRepository {
         }
     }
 }
+
+private fun ResultRow.toBudget() = Budget(
+    id = this[Budgets.id],
+    year = this[Budgets.year],
+    month = this[Budgets.month],
+)
+
+private fun ResultRow.toBudgetItem() = BudgetItem(
+    id = this[BudgetItems.id],
+    budgetId = this[BudgetItems.budgetId],
+    categoryId = this[BudgetItems.categoryId],
+    allocationCents = this[BudgetItems.allocationCents],
+    snoozed = this[BudgetItems.snoozed],
+)

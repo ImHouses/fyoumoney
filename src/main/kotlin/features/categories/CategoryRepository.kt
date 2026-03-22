@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.update
 
 class CategoryRepository {
@@ -23,15 +24,7 @@ class CategoryRepository {
             Categories
                 .selectAll()
                 .where { Categories.id eq id }
-                .map { row ->
-                    Category(
-                        id = row[Categories.id],
-                        name = row[Categories.name],
-                        type = row[Categories.type],
-                        defaultAllocationCents = row[Categories.defaultAllocationCents],
-                        active = row[Categories.active],
-                    )
-                }.singleOrNull()
+                .map(ResultRow::toCategory).singleOrNull()
         }
 
     suspend fun findAllActive(): List<Category> =
@@ -39,15 +32,7 @@ class CategoryRepository {
             Categories
                 .selectAll()
                 .where { Categories.active eq true }
-                .map { row ->
-                    Category(
-                        id = row[Categories.id],
-                        name = row[Categories.name],
-                        type = row[Categories.type],
-                        defaultAllocationCents = row[Categories.defaultAllocationCents],
-                        active = row[Categories.active],
-                    )
-                }
+                .map(ResultRow::toCategory)
         }
 
     suspend fun update(
@@ -78,3 +63,11 @@ class CategoryRepository {
                 }.map { it[Categories.id] }
         }
 }
+
+private fun ResultRow.toCategory() = Category(
+    id = this[Categories.id],
+    name = this[Categories.name],
+    type = this[Categories.type],
+    defaultAllocationCents = this[Categories.defaultAllocationCents],
+    active = this[Categories.active],
+)

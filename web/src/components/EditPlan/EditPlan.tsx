@@ -81,7 +81,7 @@ export function EditPlan() {
   return (
     <div className="edit-plan-page">
       <div className="edit-plan-header">
-        <button className="edit-plan-back" onClick={() => navigate(-1)} aria-label="Go back">
+        <button className="nav-btn edit-plan-back" onClick={() => navigate(-1)} aria-label="Go back">
           ‹
         </button>
         <h1 className="edit-plan-title">My Plan</h1>
@@ -107,6 +107,7 @@ export function EditPlan() {
                   <Link
                     key={item.id}
                     to={`/budgets/${year}/${month}/items/${item.id}/transactions`}
+                    state={{ from: 'plan' }}
                     className="edit-plan-item edit-plan-item-link"
                   >
                     <span className="edit-plan-item-name">{item.categoryName}</span>

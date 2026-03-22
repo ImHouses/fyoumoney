@@ -12,13 +12,14 @@ interface BudgetListProps {
   month: number;
   onPrev: () => void;
   onNext: () => void;
+  onRefresh: () => void;
 }
 
 function setSnoozed(items: BudgetItemResponse[], itemId: number, snoozed: boolean): BudgetItemResponse[] {
   return items.map(item => (item.id === itemId ? { ...item, snoozed } : item));
 }
 
-export function BudgetList({ budget, year, month, onPrev, onNext }: BudgetListProps) {
+export function BudgetList({ budget, year, month, onPrev, onNext, onRefresh }: BudgetListProps) {
   const [items, setItems] = useState<BudgetItemResponse[]>(budget.items);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export function BudgetList({ budget, year, month, onPrev, onNext }: BudgetListPr
 
     try {
       await updateBudgetItem(year, month, itemId, { snoozed: newSnoozed });
+      onRefresh();
     } catch (err) {
       // Revert on error
       setItems(prev => setSnoozed(prev, itemId, !newSnoozed));
@@ -55,7 +57,7 @@ export function BudgetList({ budget, year, month, onPrev, onNext }: BudgetListPr
       <div className="budget-list-header">
         <div className="budget-list-header-top">
           <div>
-            <h1 className="budget-list-title">Budget List</h1>
+            <h1 className="budget-list-title">My Budget</h1>
             <p className="budget-list-subtitle">{formatPeriod(year, month)}</p>
           </div>
           <div className="budget-list-header-actions">

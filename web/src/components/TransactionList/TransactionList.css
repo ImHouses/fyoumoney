@@ -11,49 +11,9 @@
   margin-bottom: 32px;
 }
 
-.transaction-list-back {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-text-primary);
-  font-size: 20px;
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-  flex-shrink: 0;
-}
-
-.transaction-list-back:hover {
-  background-color: var(--color-bg-card-hover);
-}
-
 .transaction-list-title {
   font-size: 20px;
   font-weight: 700;
-}
-
-.transaction-list-home {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-text-primary);
-  font-size: 20px;
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-  flex-shrink: 0;
-}
-
-.transaction-list-home:hover {
-  background-color: var(--color-bg-card-hover);
 }
 
 .transaction-list-state {
@@ -138,24 +98,6 @@
 .transaction-row-actions {
   display: flex;
   gap: 6px;
-}
-
-.transaction-row-btn {
-  padding: 6px 14px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-text-primary);
-  font-family: var(--font-family);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
-  white-space: nowrap;
-}
-
-.transaction-row-btn:hover {
-  background-color: var(--color-bg-card-hover);
 }
 
 .transaction-row-delete.confirming {

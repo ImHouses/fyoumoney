@@ -23,7 +23,9 @@ export function TransactionForm() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getCategories().then(setAllCategories).catch(() => {});
+    getCategories()
+      .then(setAllCategories)
+      .catch(err => setError(err instanceof Error ? err.message : 'Failed to load categories'));
   }, []);
 
   useEffect(() => {
@@ -95,7 +97,7 @@ export function TransactionForm() {
     return (
       <div className="transaction-form-page">
         <div className="transaction-form-header">
-          <button className="transaction-form-back" onClick={() => navigate(-1)} aria-label="Go back">‹</button>
+          <button className="nav-btn" onClick={() => navigate(-1)} aria-label="Go back">‹</button>
           <h1 className="transaction-form-title">{isEditing ? 'Edit Transaction' : 'New Transaction'}</h1>
         </div>
         <div style={{ color: 'var(--color-text-muted)', padding: '40px 0' }}>Loading...</div>
@@ -106,7 +108,7 @@ export function TransactionForm() {
   return (
     <div className="transaction-form-page">
       <div className="transaction-form-header">
-        <button className="transaction-form-back" onClick={() => navigate(-1)} aria-label="Go back">
+        <button className="nav-btn" onClick={() => navigate(-1)} aria-label="Go back">
           ‹
         </button>
         <h1 className="transaction-form-title">{isEditing ? 'Edit Transaction' : 'New Transaction'}</h1>

@@ -2,15 +2,13 @@ package dev.jcasas.features.budgets
 
 import dev.jcasas.TransactionType
 import dev.jcasas.features.categories.CategoryService
-import dev.jcasas.features.transactions.Transactions
-import kotlinx.coroutines.Dispatchers
-import org.jetbrains.exposed.sql.sum
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import dev.jcasas.features.transactions.TransactionRepository
 import java.math.BigDecimal
 
 class BudgetService(
     private val repository: BudgetRepository,
     private val categoryService: CategoryService,
+    private val transactionRepository: TransactionRepository,
 ) {
     suspend fun getOrCreateBudget(
         year: Int,
@@ -36,7 +34,7 @@ class BudgetService(
             items = items + newItems
         }
 
-        val spentByItem = getSpentByBudgetItems(items.map { it.id })
+        val spentByItem = transactionRepository.getSpentByBudgetItems(items.map { it.id })
 
         var totalExpenseSpentCents = 0L
         var totalIncomeSpentCents = 0L
@@ -47,7 +45,7 @@ class BudgetService(
                 val itemSpentCents = spentByItem[item.id] ?: 0L
 
                 when (category.type) {
-                    TransactionType.EXPENSE -> totalExpenseSpentCents += itemSpentCents
+                    TransactionType.EXPENSE -> if (!item.snoozed) totalExpenseSpentCents += itemSpentCents
                     TransactionType.INCOME -> totalIncomeSpentCents += itemSpentCents
                 }
 
@@ -116,18 +114,4 @@ class BudgetService(
                 month = budget.month,
             )
         }
-
-    private suspend fun getSpentByBudgetItems(itemIds: List<Int>): Map<Int, Long> {
-        if (itemIds.isEmpty()) return emptyMap()
-        return newSuspendedTransaction(Dispatchers.IO) {
-            val sumCol = Transactions.amountCents.sum()
-            Transactions
-                .select(Transactions.budgetItemId, sumCol)
-                .where { Transactions.budgetItemId inList itemIds }
-                .groupBy(Transactions.budgetItemId)
-                .associate { row ->
-                    row[Transactions.budgetItemId] to (row[sumCol] ?: 0L)
-                }
-        }
-    }
 }

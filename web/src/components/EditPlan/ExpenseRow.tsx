@@ -29,14 +29,14 @@ export function ExpenseRow({ item, onStartEditing, onAmountChange, onSave, onCan
             />
             <button
               type="submit"
-              className="edit-plan-item-btn save"
+              className="action-btn edit-plan-item-btn save"
               disabled={item.saving}
             >
               {item.saving ? '...' : 'Save'}
             </button>
             <button
               type="button"
-              className="edit-plan-item-btn cancel"
+              className="action-btn edit-plan-item-btn cancel"
               onClick={() => onCancel(item.id)}
             >
               Cancel
@@ -47,7 +47,7 @@ export function ExpenseRow({ item, onStartEditing, onAmountChange, onSave, onCan
             <span className="edit-plan-item-amount">{formatCurrency(item.allocation)}</span>
             <button
               type="button"
-              className="edit-plan-item-btn edit"
+              className="action-btn edit-plan-item-btn edit"
               onClick={() => onStartEditing(item.id)}
             >
               Edit

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getBudget, getTransactions, deleteTransaction } from '../../api/budgetApi';
 import type { TransactionResponse } from '../../types/budget';
 import { TransactionRow } from './TransactionRow';
@@ -8,6 +8,8 @@ import './TransactionList.css';
 export function TransactionList() {
   const { year, month, itemId } = useParams<{ year: string; month: string; itemId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromPlan = (location.state as { from?: string })?.from === 'plan';
 
   const [categoryName, setCategoryName] = useState<string>('');
   const [transactions, setTransactions] = useState<TransactionResponse[]>([]);
@@ -57,8 +59,17 @@ export function TransactionList() {
   return (
     <div className="transaction-list-page">
       <div className="transaction-list-header">
+        {fromPlan && (
+          <button
+            className="nav-btn"
+            onClick={() => navigate('/')}
+            aria-label="Go home"
+          >
+            ⌂
+          </button>
+        )}
         <button
-          className="transaction-list-back"
+          className="nav-btn"
           onClick={() => navigate(-1)}
           aria-label="Go back"
         >

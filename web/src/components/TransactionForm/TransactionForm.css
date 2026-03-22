@@ -11,25 +11,6 @@
   margin-bottom: 32px;
 }
 
-.transaction-form-back {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-text-primary);
-  font-size: 20px;
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-}
-
-.transaction-form-back:hover {
-  background-color: var(--color-bg-card-hover);
-}
-
 .transaction-form-title {
   font-size: 20px;
   font-weight: 700;

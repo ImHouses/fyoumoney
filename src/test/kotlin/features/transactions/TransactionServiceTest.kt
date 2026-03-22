@@ -38,7 +38,7 @@ class TransactionServiceTest {
             SchemaUtils.create(Categories, Budgets, BudgetItems, Transactions)
         }
         categoryService = CategoryService(CategoryRepository())
-        budgetService = BudgetService(BudgetRepository(), categoryService)
+        budgetService = BudgetService(BudgetRepository(), categoryService, TransactionRepository())
         service = TransactionService(TransactionRepository(), budgetService, categoryService)
 
         runBlocking {

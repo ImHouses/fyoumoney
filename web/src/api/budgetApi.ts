@@ -47,7 +47,7 @@ export const createCategory = (body: CategoryRequest) =>
 export const createCategories = (body: CategoryRequest[]) =>
   request<number[]>('/categories/batch', { method: 'POST', body: JSON.stringify(body) });
 
-export const updateCategory = (id: number, body: Partial<CategoryRequest>) =>
+export const updateCategory = (id: number, body: CategoryRequest) =>
   request<CategoryResponse>(`/categories/${id}`, { method: 'PUT', body: JSON.stringify(body) });
 
 export const deleteCategory = (id: number) =>
@@ -93,7 +93,7 @@ export const getTransaction = (id: number) =>
 export const createTransaction = (body: TransactionRequest) =>
   request<number>('/transactions', { method: 'POST', body: JSON.stringify(body) });
 
-export const updateTransaction = (id: number, body: Partial<TransactionRequest>) =>
+export const updateTransaction = (id: number, body: TransactionRequest) =>
   request<void>(`/transactions/${id}`, { method: 'PUT', body: JSON.stringify(body) });
 
 export const deleteTransaction = (id: number) =>

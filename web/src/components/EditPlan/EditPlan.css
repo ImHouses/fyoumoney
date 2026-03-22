@@ -12,22 +12,7 @@
 }
 
 .edit-plan-back {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-text-primary);
-  font-size: 20px;
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-}
-
-.edit-plan-back:hover {
-  background-color: var(--color-bg-card-hover);
 }
 
 .edit-plan-title {
@@ -137,23 +122,6 @@
 .edit-plan-item-input:focus {
   outline: none;
   border-color: var(--color-text-primary);
-}
-
-.edit-plan-item-btn {
-  padding: 6px 14px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-text-primary);
-  font-family: var(--font-family);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-}
-
-.edit-plan-item-btn:hover {
-  background-color: var(--color-bg-card-hover);
 }
 
 .edit-plan-item-btn.save {

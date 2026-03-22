@@ -24,6 +24,9 @@ fun Application.configureBudgetRoutes(service: BudgetService) {
             val month =
                 call.parameters["month"]?.toIntOrNull()
                     ?: return@get call.respond(HttpStatusCode.BadRequest)
+            if (month !in 1..12 || year < 1970 || year > 9999) {
+                return@get call.respond(HttpStatusCode.BadRequest)
+            }
             val budget = service.getOrCreateBudget(year, month)
             call.respond(HttpStatusCode.OK, budget)
         }
