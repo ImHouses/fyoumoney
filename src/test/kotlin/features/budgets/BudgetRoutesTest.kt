@@ -26,7 +26,6 @@ import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 class BudgetRoutesTest {
-
     @BeforeTest
     fun setup() {
         val db = Database.connect("jdbc:h2:mem:test_budget_routes;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
@@ -50,66 +49,72 @@ class BudgetRoutesTest {
         }
 
     @Test
-    fun `GET budgets year month auto-creates and returns budget`() = withApp {
-        client.post("/categories") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
+    fun `GET budgets year month auto-creates and returns budget`() =
+        withApp {
+            client.post("/categories") {
+                contentType(ContentType.Application.Json)
+                setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
+            }
+            val response = client.get("/budgets/2026/3")
+            assertEquals(HttpStatusCode.OK, response.status)
+            val body = response.bodyAsText()
+            assertContains(body, "Food")
+            assertContains(body, "500.00")
+            assertContains(body, "\"spent\"")
+            assertContains(body, "\"remaining\"")
         }
-        val response = client.get("/budgets/2026/3")
-        assertEquals(HttpStatusCode.OK, response.status)
-        val body = response.bodyAsText()
-        assertContains(body, "Food")
-        assertContains(body, "500.00")
-        assertContains(body, "\"spent\"")
-        assertContains(body, "\"remaining\"")
-    }
 
     @Test
-    fun `GET budgets year month returns 400 for invalid year or month`() = withApp {
-        assertEquals(HttpStatusCode.BadRequest, client.get("/budgets/abc/3").status)
-        assertEquals(HttpStatusCode.BadRequest, client.get("/budgets/2026/abc").status)
-    }
+    fun `GET budgets year month returns 400 for invalid year or month`() =
+        withApp {
+            assertEquals(HttpStatusCode.BadRequest, client.get("/budgets/abc/3").status)
+            assertEquals(HttpStatusCode.BadRequest, client.get("/budgets/2026/abc").status)
+        }
 
     @Test
-    fun `GET budgets returns list of all budgets`() = withApp {
-        client.post("/categories") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
+    fun `GET budgets returns list of all budgets`() =
+        withApp {
+            client.post("/categories") {
+                contentType(ContentType.Application.Json)
+                setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
+            }
+            client.get("/budgets/2026/1")
+            client.get("/budgets/2026/2")
+            val response = client.get("/budgets")
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertContains(response.bodyAsText(), "2026")
         }
-        client.get("/budgets/2026/1")
-        client.get("/budgets/2026/2")
-        val response = client.get("/budgets")
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertContains(response.bodyAsText(), "2026")
-    }
 
     @Test
-    fun `GET budgets filters by year query param`() = withApp {
-        client.post("/categories") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
+    fun `GET budgets filters by year query param`() =
+        withApp {
+            client.post("/categories") {
+                contentType(ContentType.Application.Json)
+                setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
+            }
+            client.get("/budgets/2026/1")
+            client.get("/budgets/2025/12")
+            val response = client.get("/budgets?year=2026")
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertContains(response.bodyAsText(), "2026")
         }
-        client.get("/budgets/2026/1")
-        client.get("/budgets/2025/12")
-        val response = client.get("/budgets?year=2026")
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertContains(response.bodyAsText(), "2026")
-    }
 
     @Test
-    fun `PUT budget item updates allocation`() = withApp {
-        client.post("/categories") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
+    fun `PUT budget item updates allocation`() =
+        withApp {
+            client.post("/categories") {
+                contentType(ContentType.Application.Json)
+                setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
+            }
+            val budgetResponse = client.get("/budgets/2026/3")
+            val body = budgetResponse.bodyAsText()
+            val itemIdMatch = Regex(""""items":\[.*?"id":(\d+)""").find(body)!!
+            val itemId = itemIdMatch.groupValues[1]
+            val response =
+                client.put("/budgets/2026/3/items/$itemId") {
+                    contentType(ContentType.Application.Json)
+                    setBody("""{"allocation":"600.00"}""")
+                }
+            assertEquals(HttpStatusCode.OK, response.status)
         }
-        val budgetResponse = client.get("/budgets/2026/3")
-        val body = budgetResponse.bodyAsText()
-        val itemIdMatch = Regex(""""items":\[.*?"id":(\d+)""").find(body)!!
-        val itemId = itemIdMatch.groupValues[1]
-        val response = client.put("/budgets/2026/3/items/$itemId") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"allocation":"600.00"}""")
-        }
-        assertEquals(HttpStatusCode.OK, response.status)
-    }
 }

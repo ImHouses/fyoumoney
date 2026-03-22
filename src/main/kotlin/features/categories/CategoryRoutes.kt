@@ -30,24 +30,28 @@ fun Application.configureCategoryRoutes(service: CategoryService) {
         }
 
         get("/categories/{id}") {
-            val id = call.parameters["id"]?.toIntOrNull()
-                ?: return@get call.respond(HttpStatusCode.BadRequest)
-            val category = service.getById(id)
-                ?: return@get call.respond(HttpStatusCode.NotFound)
+            val id =
+                call.parameters["id"]?.toIntOrNull()
+                    ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val category =
+                service.getById(id)
+                    ?: return@get call.respond(HttpStatusCode.NotFound)
             call.respond(HttpStatusCode.OK, CategoryResponse.from(category))
         }
 
         put("/categories/{id}") {
-            val id = call.parameters["id"]?.toIntOrNull()
-                ?: return@put call.respond(HttpStatusCode.BadRequest)
+            val id =
+                call.parameters["id"]?.toIntOrNull()
+                    ?: return@put call.respond(HttpStatusCode.BadRequest)
             val request = call.receive<CategoryRequest>()
             service.update(id, request.toNewCategory())
             call.respond(HttpStatusCode.OK)
         }
 
         delete("/categories/{id}") {
-            val id = call.parameters["id"]?.toIntOrNull()
-                ?: return@delete call.respond(HttpStatusCode.BadRequest)
+            val id =
+                call.parameters["id"]?.toIntOrNull()
+                    ?: return@delete call.respond(HttpStatusCode.BadRequest)
             service.delete(id)
             call.respond(HttpStatusCode.OK)
         }

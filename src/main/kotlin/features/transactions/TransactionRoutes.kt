@@ -31,16 +31,19 @@ fun Application.configureTransactionRoutes(service: TransactionService) {
         }
 
         get("/transactions/{id}") {
-            val id = call.parameters["id"]?.toIntOrNull()
-                ?: return@get call.respond(HttpStatusCode.BadRequest)
-            val transaction = service.getById(id)
-                ?: return@get call.respond(HttpStatusCode.NotFound)
+            val id =
+                call.parameters["id"]?.toIntOrNull()
+                    ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val transaction =
+                service.getById(id)
+                    ?: return@get call.respond(HttpStatusCode.NotFound)
             call.respond(HttpStatusCode.OK, TransactionResponse.from(transaction))
         }
 
         put("/transactions/{id}") {
-            val id = call.parameters["id"]?.toIntOrNull()
-                ?: return@put call.respond(HttpStatusCode.BadRequest)
+            val id =
+                call.parameters["id"]?.toIntOrNull()
+                    ?: return@put call.respond(HttpStatusCode.BadRequest)
             val request = call.receive<TransactionRequest>()
             try {
                 service.update(id, request.toNewTransaction())
@@ -51,8 +54,9 @@ fun Application.configureTransactionRoutes(service: TransactionService) {
         }
 
         delete("/transactions/{id}") {
-            val id = call.parameters["id"]?.toIntOrNull()
-                ?: return@delete call.respond(HttpStatusCode.BadRequest)
+            val id =
+                call.parameters["id"]?.toIntOrNull()
+                    ?: return@delete call.respond(HttpStatusCode.BadRequest)
             service.delete(id)
             call.respond(HttpStatusCode.OK)
         }

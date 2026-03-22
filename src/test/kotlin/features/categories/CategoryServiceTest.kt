@@ -15,7 +15,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class CategoryServiceTest {
-
     private lateinit var service: CategoryService
 
     @BeforeTest
@@ -30,48 +29,54 @@ class CategoryServiceTest {
     }
 
     @Test
-    fun `create returns the id of the new category`() = runBlocking {
-        val id = service.create(NewCategory("Food", TransactionType.EXPENSE, 50000))
-        assertTrue(id > 0)
-    }
+    fun `create returns the id of the new category`() =
+        runBlocking {
+            val id = service.create(NewCategory("Food", TransactionType.EXPENSE, 50000))
+            assertTrue(id > 0)
+        }
 
     @Test
-    fun `getById returns the category`() = runBlocking {
-        val id = service.create(NewCategory("Food", TransactionType.EXPENSE, 50000))
-        val category = service.getById(id)
-        assertNotNull(category)
-        assertEquals("Food", category.name)
-    }
+    fun `getById returns the category`() =
+        runBlocking {
+            val id = service.create(NewCategory("Food", TransactionType.EXPENSE, 50000))
+            val category = service.getById(id)
+            assertNotNull(category)
+            assertEquals("Food", category.name)
+        }
 
     @Test
-    fun `getById returns null when not found`() = runBlocking {
-        assertNull(service.getById(999))
-    }
+    fun `getById returns null when not found`() =
+        runBlocking {
+            assertNull(service.getById(999))
+        }
 
     @Test
-    fun `getAllActive excludes soft-deleted categories`() = runBlocking {
-        service.create(NewCategory("Food", TransactionType.EXPENSE, 50000))
-        val deletedId = service.create(NewCategory("Old", TransactionType.EXPENSE, 10000))
-        service.delete(deletedId)
-        val active = service.getAllActive()
-        assertEquals(1, active.size)
-    }
+    fun `getAllActive excludes soft-deleted categories`() =
+        runBlocking {
+            service.create(NewCategory("Food", TransactionType.EXPENSE, 50000))
+            val deletedId = service.create(NewCategory("Old", TransactionType.EXPENSE, 10000))
+            service.delete(deletedId)
+            val active = service.getAllActive()
+            assertEquals(1, active.size)
+        }
 
     @Test
-    fun `update changes category fields`() = runBlocking {
-        val id = service.create(NewCategory("Food", TransactionType.EXPENSE, 50000))
-        service.update(id, NewCategory("Groceries", TransactionType.EXPENSE, 60000))
-        val updated = service.getById(id)
-        assertNotNull(updated)
-        assertEquals("Groceries", updated.name)
-    }
+    fun `update changes category fields`() =
+        runBlocking {
+            val id = service.create(NewCategory("Food", TransactionType.EXPENSE, 50000))
+            service.update(id, NewCategory("Groceries", TransactionType.EXPENSE, 60000))
+            val updated = service.getById(id)
+            assertNotNull(updated)
+            assertEquals("Groceries", updated.name)
+        }
 
     @Test
-    fun `delete soft-deletes the category`() = runBlocking {
-        val id = service.create(NewCategory("Food", TransactionType.EXPENSE, 50000))
-        service.delete(id)
-        val found = service.getById(id)
-        assertNotNull(found)
-        assertFalse(found.active)
-    }
+    fun `delete soft-deletes the category`() =
+        runBlocking {
+            val id = service.create(NewCategory("Food", TransactionType.EXPENSE, 50000))
+            service.delete(id)
+            val found = service.getById(id)
+            assertNotNull(found)
+            assertFalse(found.active)
+        }
 }

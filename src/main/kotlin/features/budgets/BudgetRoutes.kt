@@ -18,17 +18,20 @@ fun Application.configureBudgetRoutes(service: BudgetService) {
         }
 
         get("/budgets/{year}/{month}") {
-            val year = call.parameters["year"]?.toIntOrNull()
-                ?: return@get call.respond(HttpStatusCode.BadRequest)
-            val month = call.parameters["month"]?.toIntOrNull()
-                ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val year =
+                call.parameters["year"]?.toIntOrNull()
+                    ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val month =
+                call.parameters["month"]?.toIntOrNull()
+                    ?: return@get call.respond(HttpStatusCode.BadRequest)
             val budget = service.getOrCreateBudget(year, month)
             call.respond(HttpStatusCode.OK, budget)
         }
 
         put("/budgets/{year}/{month}/items/{itemId}") {
-            val itemId = call.parameters["itemId"]?.toIntOrNull()
-                ?: return@put call.respond(HttpStatusCode.BadRequest)
+            val itemId =
+                call.parameters["itemId"]?.toIntOrNull()
+                    ?: return@put call.respond(HttpStatusCode.BadRequest)
             val request = call.receive<BudgetItemUpdateRequest>()
             val allocationCents = request.allocation?.let { BigDecimal(it).movePointRight(2).toLong() }
             service.updateBudgetItem(itemId, allocationCents, request.snoozed)

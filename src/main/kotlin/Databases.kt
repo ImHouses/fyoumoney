@@ -15,8 +15,11 @@ fun Application.configureDatabases() {
     val password = environment.config.property("postgres.password").getString()
     Database.connect(url = url, user = user, password = password, driver = "org.postgresql.Driver")
 
-    val isDevelopment = environment.config
-        .propertyOrNull("ktor.development")?.getString()?.toBoolean() ?: false
+    val isDevelopment =
+        environment.config
+            .propertyOrNull("ktor.development")
+            ?.getString()
+            ?.toBoolean() ?: false
 
     if (isDevelopment) {
         transaction {

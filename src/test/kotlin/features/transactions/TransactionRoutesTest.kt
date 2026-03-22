@@ -30,7 +30,6 @@ import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 class TransactionRoutesTest {
-
     @BeforeTest
     fun setup() {
         val db = Database.connect("jdbc:h2:mem:test_txn_routes_v2;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
@@ -55,120 +54,145 @@ class TransactionRoutesTest {
         }
 
     private suspend fun ApplicationTestBuilder.createCategory(): String {
-        val response = client.post("/categories") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
-        }
+        val response =
+            client.post("/categories") {
+                contentType(ContentType.Application.Json)
+                setBody("""{"name":"Food","type":"EXPENSE","defaultAllocation":"500.00"}""")
+            }
         return response.bodyAsText().trim()
     }
 
     @Test
-    fun `POST transactions creates and returns 201`() = withApp {
-        val categoryId = createCategory()
+    fun `POST transactions creates and returns 201`() =
+        withApp {
+            val categoryId = createCategory()
 
-        val response = client.post("/transactions") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"amount":"25.50","categoryId":$categoryId,"description":"Groceries","date":"2026-03-20"}""")
+            val response =
+                client.post("/transactions") {
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        """{"amount":"25.50","categoryId":$categoryId,"description":"Groceries","date":"2026-03-20"}""",
+                    )
+                }
+
+            assertEquals(HttpStatusCode.Created, response.status)
         }
-
-        assertEquals(HttpStatusCode.Created, response.status)
-    }
 
     @Test
-    fun `GET transactions returns all transactions`() = withApp {
-        val categoryId = createCategory()
-        client.post("/transactions") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"amount":"25.50","categoryId":$categoryId,"description":"Groceries","date":"2026-03-20"}""")
+    fun `GET transactions returns all transactions`() =
+        withApp {
+            val categoryId = createCategory()
+            client.post("/transactions") {
+                contentType(ContentType.Application.Json)
+                setBody("""{"amount":"25.50","categoryId":$categoryId,"description":"Groceries","date":"2026-03-20"}""")
+            }
+
+            val response = client.get("/transactions")
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertContains(response.bodyAsText(), "Groceries")
+            assertContains(response.bodyAsText(), "budgetItemId")
+            assertContains(response.bodyAsText(), "categoryId")
         }
-
-        val response = client.get("/transactions")
-
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertContains(response.bodyAsText(), "Groceries")
-        assertContains(response.bodyAsText(), "budgetItemId")
-        assertContains(response.bodyAsText(), "categoryId")
-    }
 
     @Test
-    fun `GET transactions by id returns the transaction`() = withApp {
-        val categoryId = createCategory()
-        val created = client.post("/transactions") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"amount":"25.50","categoryId":$categoryId,"description":"Groceries","date":"2026-03-20"}""")
+    fun `GET transactions by id returns the transaction`() =
+        withApp {
+            val categoryId = createCategory()
+            val created =
+                client.post("/transactions") {
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        """{"amount":"25.50","categoryId":$categoryId,"description":"Groceries","date":"2026-03-20"}""",
+                    )
+                }
+            val id = created.bodyAsText().trim()
+
+            val response = client.get("/transactions/$id")
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertContains(response.bodyAsText(), "Groceries")
         }
-        val id = created.bodyAsText().trim()
-
-        val response = client.get("/transactions/$id")
-
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertContains(response.bodyAsText(), "Groceries")
-    }
 
     @Test
-    fun `GET transactions by id returns 404 when not found`() = withApp {
-        val response = client.get("/transactions/999")
+    fun `GET transactions by id returns 404 when not found`() =
+        withApp {
+            val response = client.get("/transactions/999")
 
-        assertEquals(HttpStatusCode.NotFound, response.status)
-    }
+            assertEquals(HttpStatusCode.NotFound, response.status)
+        }
 
     @Test
-    fun `PUT transactions updates and returns 200`() = withApp {
-        val categoryId = createCategory()
-        val created = client.post("/transactions") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"amount":"25.50","categoryId":$categoryId,"description":"Groceries","date":"2026-03-20"}""")
-        }
-        val id = created.bodyAsText().trim()
+    fun `PUT transactions updates and returns 200`() =
+        withApp {
+            val categoryId = createCategory()
+            val created =
+                client.post("/transactions") {
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        """{"amount":"25.50","categoryId":$categoryId,"description":"Groceries","date":"2026-03-20"}""",
+                    )
+                }
+            val id = created.bodyAsText().trim()
 
-        val response = client.put("/transactions/$id") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"amount":"30.00","categoryId":$categoryId,"description":"Groceries and drinks","date":"2026-03-20"}""")
-        }
+            val response =
+                client.put("/transactions/$id") {
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        """{"amount":"30.00","categoryId":$categoryId,"description":"Groceries and drinks","date":"2026-03-20"}""",
+                    )
+                }
 
-        assertEquals(HttpStatusCode.OK, response.status)
-    }
+            assertEquals(HttpStatusCode.OK, response.status)
+        }
 
     @Test
-    fun `DELETE transactions removes and returns 200`() = withApp {
-        val categoryId = createCategory()
-        val created = client.post("/transactions") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"amount":"25.50","categoryId":$categoryId,"description":"Groceries","date":"2026-03-20"}""")
+    fun `DELETE transactions removes and returns 200`() =
+        withApp {
+            val categoryId = createCategory()
+            val created =
+                client.post("/transactions") {
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        """{"amount":"25.50","categoryId":$categoryId,"description":"Groceries","date":"2026-03-20"}""",
+                    )
+                }
+            val id = created.bodyAsText().trim()
+
+            val response = client.delete("/transactions/$id")
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(HttpStatusCode.NotFound, client.get("/transactions/$id").status)
         }
-        val id = created.bodyAsText().trim()
-
-        val response = client.delete("/transactions/$id")
-
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(HttpStatusCode.NotFound, client.get("/transactions/$id").status)
-    }
 
     @Test
-    fun `GET transactions supports query filters`() = withApp {
-        val categoryId = createCategory()
-        client.post("/transactions") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"amount":"25.50","categoryId":$categoryId,"description":"Groceries","date":"2026-03-20"}""")
+    fun `GET transactions supports query filters`() =
+        withApp {
+            val categoryId = createCategory()
+            client.post("/transactions") {
+                contentType(ContentType.Application.Json)
+                setBody("""{"amount":"25.50","categoryId":$categoryId,"description":"Groceries","date":"2026-03-20"}""")
+            }
+
+            val response = client.get("/transactions?categoryId=$categoryId&year=2026&month=3")
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertContains(response.bodyAsText(), "Groceries")
         }
-
-        val response = client.get("/transactions?categoryId=$categoryId&year=2026&month=3")
-
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertContains(response.bodyAsText(), "Groceries")
-    }
 
     @Test
-    fun `POST transactions returns 422 for soft-deleted category without budget item`() = withApp {
-        val categoryId = createCategory()
-        // Soft-delete the category before any budget is created for the target month
-        client.delete("/categories/$categoryId")
+    fun `POST transactions returns 422 for soft-deleted category without budget item`() =
+        withApp {
+            val categoryId = createCategory()
+            // Soft-delete the category before any budget is created for the target month
+            client.delete("/categories/$categoryId")
 
-        val response = client.post("/transactions") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"amount":"10.00","categoryId":$categoryId,"description":"Test","date":"2026-05-01"}""")
+            val response =
+                client.post("/transactions") {
+                    contentType(ContentType.Application.Json)
+                    setBody("""{"amount":"10.00","categoryId":$categoryId,"description":"Test","date":"2026-05-01"}""")
+                }
+
+            assertEquals(HttpStatusCode.UnprocessableEntity, response.status)
         }
-
-        assertEquals(HttpStatusCode.UnprocessableEntity, response.status)
-    }
 }

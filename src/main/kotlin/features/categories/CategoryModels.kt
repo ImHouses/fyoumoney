@@ -24,11 +24,12 @@ data class CategoryRequest(
     val type: TransactionType,
     val defaultAllocation: String,
 ) {
-    fun toNewCategory() = NewCategory(
-        name = name,
-        type = type,
-        defaultAllocationCents = BigDecimal(defaultAllocation).movePointRight(2).toLong(),
-    )
+    fun toNewCategory() =
+        NewCategory(
+            name = name,
+            type = type,
+            defaultAllocationCents = BigDecimal(defaultAllocation).movePointRight(2).toLong(),
+        )
 }
 
 @Serializable
@@ -40,12 +41,13 @@ data class CategoryResponse(
     val active: Boolean,
 ) {
     companion object {
-        fun from(category: Category) = CategoryResponse(
-            id = category.id,
-            name = category.name,
-            type = category.type,
-            defaultAllocation = BigDecimal(category.defaultAllocationCents).movePointLeft(2).toPlainString(),
-            active = category.active,
-        )
+        fun from(category: Category) =
+            CategoryResponse(
+                id = category.id,
+                name = category.name,
+                type = category.type,
+                defaultAllocation = BigDecimal(category.defaultAllocationCents).movePointLeft(2).toPlainString(),
+                active = category.active,
+            )
     }
 }

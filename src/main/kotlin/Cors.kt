@@ -7,8 +7,11 @@ import io.ktor.server.application.install
 import io.ktor.server.plugins.cors.routing.CORS
 
 fun Application.configureCors() {
-    val isDevelopment = environment.config
-        .propertyOrNull("ktor.development")?.getString()?.toBoolean() ?: false
+    val isDevelopment =
+        environment.config
+            .propertyOrNull("ktor.development")
+            ?.getString()
+            ?.toBoolean() ?: false
 
     if (!isDevelopment) return
 
