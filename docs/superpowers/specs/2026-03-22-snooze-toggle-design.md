@@ -49,10 +49,26 @@ Follows the existing inline action button pattern (reference: `edit-plan-item-bt
 - `BudgetList.tsx` — add ghost column header, pass snooze handler to rows, manage optimistic state
 - `BudgetList.css` — update column header grid to match
 
+## State Management
+
+`BudgetList` currently receives `budget` as a prop with no local item state. To support optimistic updates, introduce a local `useState` in `BudgetList` derived from `budget.items`. The snooze handler updates this local state immediately, then calls the API. On error, it reverts.
+
+## Income Row Alignment
+
+Income rows share the `.budget-row` class. With the 5th grid column, income rows need an additional empty `<span>` placeholder to maintain grid alignment. The toggle button is not rendered for income rows.
+
+## Re-sorting on Toggle
+
+When an item is snoozed, the existing sort logic moves it to the bottom. This re-sort happens immediately on optimistic update since the sort runs on render. The row will visually jump — this is the expected behavior.
+
 ## Data Flow
 
 1. User clicks toggle on a row.
 2. `BudgetList` optimistically updates the item's `snoozed` field in local state.
 3. `BudgetList` calls `updateBudgetItem(year, month, itemId, { snoozed })`.
 4. On success: state is already correct.
-5. On error: revert the item's `snoozed` field and surface error.
+5. On error: revert the item's `snoozed` field, log error to console.
+
+## Accessibility
+
+The toggle button includes `aria-label` ("Snooze category" / "Wake category") and `aria-pressed` to reflect snoozed state, since it uses emoji-only content.
