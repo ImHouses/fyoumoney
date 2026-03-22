@@ -83,4 +83,19 @@ class CategoryRepositoryTest {
         assertNotNull(found)
         assertFalse(found.active)
     }
+
+    @Test
+    fun `createBatch stores multiple categories and returns their ids`() = runBlocking {
+        val ids = repository.createBatch(
+            listOf(
+                NewCategory("Salary", TransactionType.INCOME, 500000),
+                NewCategory("Food", TransactionType.EXPENSE, 50000),
+                NewCategory("Rent", TransactionType.EXPENSE, 120000),
+            )
+        )
+        assertEquals(3, ids.size)
+        ids.forEach { assertTrue(it > 0) }
+        val all = repository.findAllActive()
+        assertEquals(3, all.size)
+    }
 }

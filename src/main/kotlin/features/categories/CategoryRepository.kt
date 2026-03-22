@@ -2,6 +2,7 @@ package dev.jcasas.features.categories
 
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -58,5 +59,13 @@ class CategoryRepository {
         Categories.update({ Categories.id eq id }) {
             it[active] = false
         }
+    }
+
+    suspend fun createBatch(categories: List<NewCategory>): List<Int> = newSuspendedTransaction(Dispatchers.IO) {
+        Categories.batchInsert(categories) { category ->
+            this[Categories.name] = category.name
+            this[Categories.type] = category.type
+            this[Categories.defaultAllocationCents] = category.defaultAllocationCents
+        }.map { it[Categories.id] }
     }
 }
